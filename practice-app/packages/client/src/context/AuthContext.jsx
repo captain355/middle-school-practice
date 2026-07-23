@@ -58,63 +58,11 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('practice_app_user');
   };
 
-  // 管理员操作 — 这些仍依赖 localStorage 中的本地用户列表
-  // 后续将迁移到管理员 API
+  // 管理员标识
   const isAdmin = user?.role === 'admin';
 
-  const deleteUser = (username) => {
-    if (!isAdmin) return false;
-    try {
-      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
-      const filtered = users.filter(u => u.username !== username);
-      localStorage.setItem('practice_app_users', JSON.stringify(filtered));
-      return true;
-    } catch { return false; }
-  };
-
-  const toggleUserRole = (username) => {
-    if (!isAdmin) return false;
-    try {
-      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
-      const target = users.find(u => u.username === username);
-      if (!target) return false;
-      target.role = target.role === 'admin' ? 'user' : 'admin';
-      localStorage.setItem('practice_app_users', JSON.stringify(users));
-      if (username === user.username) {
-        const updated = { ...user, role: target.role };
-        setUser(updated);
-        localStorage.setItem('practice_app_user', JSON.stringify(updated));
-      }
-      return true;
-    } catch { return false; }
-  };
-
-  const resetUserPassword = (username, newPassword) => {
-    if (!isAdmin) return false;
-    try {
-      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
-      const target = users.find(u => u.username === username);
-      if (!target) return false;
-      target.password = newPassword;
-      localStorage.setItem('practice_app_users', JSON.stringify(users));
-      return true;
-    } catch { return false; }
-  };
-
-  const toggleUserDisabled = (username) => {
-    if (!isAdmin) return false;
-    try {
-      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
-      const target = users.find(u => u.username === username);
-      if (!target) return false;
-      target.disabled = !target.disabled;
-      localStorage.setItem('practice_app_users', JSON.stringify(users));
-      return true;
-    } catch { return false; }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, isAdmin, deleteUser, toggleUserRole, resetUserPassword, toggleUserDisabled }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );
