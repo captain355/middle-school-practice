@@ -1,9 +1,35 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { subjects } from '../data/subjects';
 import { useAuth } from '../context/AuthContext';
+import { subjectsApi } from '../api/subjects';
 
 export default function HomePage() {
   const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const list = await subjectsApi.list();
+        let totalKP = 0, totalQuestions = 0, totalTextbooks = 0;
+        for (const s of list) {
+          totalTextbooks += (s.textbooks || []).length;
+          for (const tb of (s.textbooks || [])) {
+            for (const ch of (tb.chapters || [])) {
+              totalKP += ch.knowledgePoints || 0;
+              totalQuestions += ch.questionCount || 0;
+            }
+          }
+        }
+        setStats({ subjects: list.length, knowledgePoints: totalKP, questions: totalQuestions, textbooks: totalTextbooks });
+      } catch (err) {
+        console.error('Failed to load stats:', err);
+      }
+    }
+    loadStats();
+  }, []);
+
   return (
     <div>
       {/* Hero */}
@@ -48,10 +74,10 @@ export default function HomePage() {
       <section style={{ maxWidth: 1100, margin: '0 auto 40px', padding: '0 24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-around', padding: '24px', background: '#fff', borderRadius: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           {[
-            { label: '大学科', value: '9' },
-            { label: '知识点', value: '500+' },
-            { label: '精选题', value: '2000+' },
-            { label: '教材版本', value: '30+' },
+            { label: '大学科', value: stats ? `${stats.subjects}` : '9' },
+            { label: '知识点', value: stats ? `${stats.knowledgePoints}` : '500+' },
+            { label: '精选题', value: stats ? `${stats.questions}` : '2000+' },
+            { label: '教材版本', value: stats ? `${stats.textbooks}` : '30+' },
           ].map((item, i) => (
             <div key={i} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#3B82F6' }}>{item.value}</div>

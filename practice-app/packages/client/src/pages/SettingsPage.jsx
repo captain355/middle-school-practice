@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { exportAsJSON, importFromJSON, clearAllData, getDataSummary } from '../utils/exportImport';
+import { practiceApi } from '../api/practice';
 import { usersApi } from '../api/users';
 
 export default function SettingsPage() {
@@ -29,22 +29,55 @@ export default function SettingsPage() {
     }
   };
 
+  // 加载数据概览
+  const loadSummary = async () => {
+    try {
+      const stats = await practiceApi.stats();
+      const wrongQuestions = await practiceApi.wrongQuestions();
+      const progress = await practiceApi.progress();
+      const streak = await practiceApi.getStreak();
+      setSummary({
+        totalPractice: stats.totalPractice,
+        totalQuestions: stats.totalQuestions,
+        totalCorrect: stats.totalCorrect,
+        accuracy: stats.accuracy,
+        wrongCount: wrongQuestions.length,
+        progressCount: progress.length,
+        streakCount: streak.streakCount,
+        subjectStats: stats.subjectStats,
+      });
+    } catch (err) {
+      console.error('加载数据概览失败：', err);
+    }
+  };
+
   // 进入页面时自动加载数据概览
   useEffect(() => {
     if (user) {
-      setSummary(getDataSummary());
+      loadSummary();
       if (isAdmin) {
         loadUsers();
       }
     }
   }, [user, isAdmin]);
 
-  const handleExport = () => {
+  const handleExport = async () => {
     try {
-      exportAsJSON();
+      const stats = await practiceApi.stats();
+      const wrongQuestions = await practiceApi.wrongQuestions();
+      const progress = await practiceApi.progress();
+      const streak = await practiceApi.getStreak();
+      const data = { stats, wrongQuestions, progress, streak, exportedAt: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `practice-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
       setImportStatus({ type: 'success', message: '数据已成功导出为 JSON 文件，请查收下载' });
     } catch (err) {
-      setImportStatus({ type: 'error', message: '导出失败：' + err.message });
+      setImportStatus({ type: 'error', message: '导出失败：' + (err.message || '未知错误') });
     }
   };
 
@@ -52,9 +85,10 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const count = await importFromJSON(file);
-      setImportStatus({ type: 'success', message: `成功导入 ${count} 条数据。请重新登录以刷新用户状态。` });
-      setSummary(getDataSummary());
+      setImportStatus({
+        type: 'error',
+        message: '该功能仅支持导入旧版本地备份数据。新版数据已存储在服务端，无需手动导入。',
+      });
     } catch (err) {
       setImportStatus({ type: 'error', message: err.message });
     }
@@ -62,9 +96,8 @@ export default function SettingsPage() {
   };
 
   const handleClear = () => {
-    if (!confirm('确定要清除所有数据吗？包括用户账号、练习记录、错题本、学习进度等，此操作不可恢复！')) return;
-    if (!confirm('再次确认：真的要清除所有数据吗？')) return;
-    clearAllData();
+    if (!confirm('注意：新版数据存储在服务器端，此操作仅清除浏览器本地缓存（如登录状态），不会删除服务端数据。\n\n如需清除服务端数据，请通过管理员用户管理页面删除用户操作。\n\n确定要清除本地缓存吗？')) return;
+    localStorage.clear();
     logout();
     navigate('/login');
   };
@@ -357,7 +390,7 @@ export default function SettingsPage() {
       <div style={cardStyle}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#1E293B', marginBottom: 0 }}>数据概览</h3>
-          <button onClick={() => setSummary(getDataSummary())} style={{
+          <button onClick={loadSummary} style={{
             padding: '6px 12px', borderRadius: 6, border: '1px solid #E2E8F0',
             background: '#fff', color: '#64748B', fontSize: '0.75rem', cursor: 'pointer',
           }}>刷新</button>
@@ -365,11 +398,12 @@ export default function SettingsPage() {
         {summary && (
           <div className="grid-3">
             {[
-              { label: '注册用户', value: summary.userCount + '人' },
-              { label: '练习记录', value: summary.historyCount + '条' },
+              { label: '练习次数', value: summary.totalPractice + '次' },
+              { label: '答题总数', value: summary.totalQuestions + '题' },
+              { label: '正确率', value: (summary.accuracy != null ? (summary.accuracy * 100).toFixed(1) + '%' : '-') },
               { label: '错题记录', value: summary.wrongCount + '条' },
               { label: '有进度章节', value: summary.progressCount + '个' },
-              { label: '打卡用户', value: summary.streakCount + '人' },
+              { label: '连续打卡', value: summary.streakCount + '天' },
             ].map((item, i) => (
               <div key={i} style={{ padding: 12, background: '#F8FAFC', borderRadius: 10, textAlign: 'center' }}>
                 <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#3B82F6' }}>{item.value}</div>

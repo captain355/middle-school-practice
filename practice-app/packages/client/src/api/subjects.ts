@@ -6,6 +6,25 @@
 import { get } from './client';
 
 /**
+ * 章节摘要（用于列表中的统计）
+ */
+export interface ChapterSummary {
+  knowledgePoints: number;
+  questionCount: number;
+}
+
+/**
+ * 教材摘要（用于列表中的统计）
+ */
+export interface TextbookSummary {
+  id: string;
+  code: string;
+  name: string;
+  publisher: string;
+  chapters: ChapterSummary[];
+}
+
+/**
  * 学科数据结构
  */
 export interface SubjectItem {
@@ -23,6 +42,10 @@ export interface SubjectItem {
   tags: string[];
   /** 适用的年级范围 */
   gradeRange: number[];
+  /** 排序权重 */
+  sortOrder?: number;
+  /** 教材列表（list 时包含） */
+  textbooks?: TextbookSummary[];
 }
 
 /**
