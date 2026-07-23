@@ -1,24 +1,26 @@
 {
-  "name": "practice-app",
+  "name": "middle-school-practice",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "初中各学科知识体系专项练习库",
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev:client": "npm run dev --workspace=packages/client",
+    "dev:server": "npm run dev --workspace=packages/server",
+    "dev": "npm run dev:server & npm run dev:client",
+    "build:client": "npm run build --workspace=packages/client",
+    "build:server": "npm run build --workspace=packages/server",
+    "build": "npm run build:shared && npm run build:server && npm run build:client",
+    "build:shared": "npm run build --workspace=packages/shared",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "db:migrate": "npm run db:migrate --workspace=packages/server",
+    "db:seed": "npm run db:seed --workspace=packages/server",
+    "db:import-questions": "npm run import-questions --workspace=packages/server"
   },
-  "dependencies": {
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.3",
-    "oxlint": "^1.71.0",
-    "vite": "^8.1.1"
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
