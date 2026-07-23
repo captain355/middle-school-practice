@@ -1,0 +1,40 @@
+# fly.toml - Fly.io 部署配置文件
+# 使用方法:
+#   1. 安装 Fly CLI: https://fly.io/docs/hands-on/install-flyctl/
+#   2. 登录: fly auth login
+#   3. 创建应用: fly launch
+#   4. 创建持久化卷: fly volumes create data -s 1
+#   5. 部署: fly deploy
+
+app = "middle-school-practice"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  NODE_ENV = "production"
+
+[mounts]
+  source = "data"
+  destination = "/app/data"
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1
