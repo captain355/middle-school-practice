@@ -400,7 +400,7 @@ export default function SettingsPage() {
             {[
               { label: '练习次数', value: summary.totalPractice + '次' },
               { label: '答题总数', value: summary.totalQuestions + '题' },
-              { label: '正确率', value: (summary.accuracy != null ? (summary.accuracy * 100).toFixed(1) + '%' : '-') },
+              { label: '正确率', value: (summary.accuracy != null ? summary.accuracy.toFixed(1) + '%' : '-') },
               { label: '错题记录', value: summary.wrongCount + '条' },
               { label: '有进度章节', value: summary.progressCount + '个' },
               { label: '连续打卡', value: summary.streakCount + '天' },

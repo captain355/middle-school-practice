@@ -134,7 +134,7 @@ userRoutes.put('/admin/users/:userId/role', requireAdmin, async (req: Request, r
   }
 
   try {
-    await userService.updateRole(req.params.userId, parsed.data.role);
+    await userService.updateUserRole(req.params.userId, parsed.data.role);
     success(res, null, '角色已更新');
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : '修改角色失败';

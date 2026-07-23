@@ -25,13 +25,17 @@ function parseSubject(subject: any) {
 export async function findAll() {
   const subjects = await prisma.subject.findMany({
     orderBy: { sortOrder: 'asc' },
-    include: {
-      textbooks: {
-        include: {
-          chapters: {
-            select: { knowledgePoints: true, questionCount: true },
-          },
-        },
+    select: {
+      id: true,
+      name: true,
+      emoji: true,
+      color: true,
+      description: true,
+      tags: true,
+      gradeRange: true,
+      sortOrder: true,
+      _count: {
+        select: { textbooks: true },
       },
     },
   });

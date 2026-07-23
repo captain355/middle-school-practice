@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { routes } from './routes/index.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -10,8 +14,17 @@ app.use(cors());
 // 解析 JSON 请求体
 app.use(express.json());
 
-// 注册路由
+// 注册 API 路由
 app.use(routes);
+
+// 托管前端静态文件（生产模式）
+const clientDist = path.resolve(__dirname, '../../client/dist');
+app.use(express.static(clientDist));
+
+// SPA 回退：所有未匹配的 GET 请求返回 index.html
+app.get('*', (_req: express.Request, res: express.Response) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
+});
 
 // 全局错误处理中间件
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
