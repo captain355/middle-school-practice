@@ -58,6 +58,7 @@ export default function WrongQuestionsPage() {
       questions: wrongList.slice(0, 20), // 最多练习20题
       currentIndex: 0,
       answers: {},
+      submittedIds: [],
       submitted: false,
     });
   };
@@ -65,8 +66,17 @@ export default function WrongQuestionsPage() {
   const submitRetryAnswer = () => {
     const q = quizMode.questions[quizMode.currentIndex];
     const a = quizMode.answers[q.id];
-    if (!a && a !== 0) return;
-    setQuizMode({ ...quizMode, answers: { ...quizMode.answers, [q.id]: a } });
+    if (!a && a !== 0 && q.type !== 'fill' && q.type !== 'shortanswer' && q.type !== 'matching') return;
+    if ((q.type === 'fill' || q.type === 'shortanswer') && (!a || !String(a).trim())) return;
+    if (q.type === 'matching') {
+      const pairs = q.pairs || [];
+      const cur = String(a || '');
+      const allSelected = pairs.every(p => cur.includes(p.left + '-'));
+      if (!allSelected) return;
+    }
+    if (!quizMode.submittedIds.includes(q.id)) {
+      setQuizMode({ ...quizMode, submittedIds: [...quizMode.submittedIds, q.id] });
+    }
   };
 
   const nextRetryQuestion = () => {
@@ -94,8 +104,14 @@ export default function WrongQuestionsPage() {
   if (quizMode) {
     const q = quizMode.questions[quizMode.currentIndex];
     const subj = getSubjectById(q.subjectId);
-    const isAnswered = quizMode.answers[q.id] !== undefined;
+    const isAnswered = quizMode.submittedIds.includes(q.id);
     const isCorrect = isAnswered && (
+      q.type === 'matching' ? (() => {
+        const correctPairs = q.answer.split(',').map(p => p.trim());
+        const userPairs = String(quizMode.answers[q.id]).split(',').map(p => p.trim());
+        if (correctPairs.length !== userPairs.length) return false;
+        return correctPairs.every(cp => userPairs.includes(cp));
+      })() : q.type === 'shortanswer' ? (q.acceptableAnswers?.some(kw => String(quizMode.answers[q.id]).includes(kw)) || false) :
       quizMode.answers[q.id] === q.answer ||
       String(quizMode.answers[q.id]).trim() === String(q.answer).trim()
     );
@@ -103,6 +119,15 @@ export default function WrongQuestionsPage() {
     if (quizMode.submitted) {
       const correct = quizMode.questions.filter(item => {
         const a = quizMode.answers[item.id];
+        if (item.type === 'matching') {
+          const correctPairs = item.answer.split(',').map(p => p.trim());
+          const userPairs = String(a || '').split(',').map(p => p.trim());
+          if (correctPairs.length !== userPairs.length) return false;
+          return correctPairs.every(cp => userPairs.includes(cp));
+        }
+        if (item.type === 'shortanswer') {
+          return item.acceptableAnswers?.some(kw => String(a || '').includes(kw)) || false;
+        }
         return a === item.answer || String(a).trim() === String(item.answer).trim();
       }).length;
       const total = quizMode.questions.length;
@@ -120,7 +145,16 @@ export default function WrongQuestionsPage() {
             <div style={{ display: 'grid', gap: 12 }}>
               {quizMode.questions.map((item, i) => {
                 const a = quizMode.answers[item.id];
-                const ok = a === item.answer || String(a).trim() === String(item.answer).trim();
+                let ok = false;
+                if (item.type === 'matching') {
+                  const correctPairs = item.answer.split(',').map(p => p.trim());
+                  const userPairs = String(a || '').split(',').map(p => p.trim());
+                  ok = correctPairs.length === userPairs.length && correctPairs.every(cp => userPairs.includes(cp));
+                } else if (item.type === 'shortanswer') {
+                  ok = item.acceptableAnswers?.some(kw => String(a || '').includes(kw)) || false;
+                } else {
+                  ok = a === item.answer || String(a || '').trim() === String(item.answer).trim();
+                }
                 return (
                   <div key={i} style={{ padding: 16, borderRadius: 12, border: '1px solid', borderColor: ok ? '#22C55E' : '#EF4444', background: ok ? '#F0FDF4' : '#FEF2F2' }}>
                     <div style={{ fontWeight: 600, marginBottom: 6, color: '#1E293B' }}>第{i+1}题 {ok ? '✅' : '❌'}</div>
@@ -154,7 +188,7 @@ export default function WrongQuestionsPage() {
         <div style={{ background: '#fff', borderRadius: 16, padding: 32, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: (subj?.color || '#3B82F6') + '18', color: subj?.color || '#3B82F6', fontWeight: 600 }}>
-              {q.type === 'choice' ? '选择题' : q.type === 'fill' ? '填空题' : '判断题'}
+              {q.type === 'choice' ? '选择题' : q.type === 'fill' ? '填空题' : q.type === 'matching' ? '连线题' : q.type === 'shortanswer' ? '简答题' : '判断题'}
             </span>
             <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: '#FEF3C7', color: '#92400E' }}>错题重练</span>
           </div>
@@ -173,6 +207,49 @@ export default function WrongQuestionsPage() {
                 }}>{opt}</button>
               ))}
             </div>
+          ) : q.type === 'matching' ? (() => {
+            const currentAnswer = quizMode.answers[q.id] || '';
+            const userPairs = currentAnswer ? currentAnswer.split(',') : [];
+            const userMap = {};
+            userPairs.forEach(pair => {
+              const [l, ...r] = pair.split('-');
+              userMap[l] = r.join('-');
+            });
+            const rights = [...new Set((q.pairs || []).map(p => p.right))];
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {(q.pairs || []).map((pair, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px', background: '#F8FAFC', borderRadius: 8 }}>
+                    <span style={{ flex: 1, fontWeight: 600, color: '#1E293B', textAlign: 'right' }}>{pair.left}</span>
+                    <span style={{ color: '#94A3B8' }}>&rarr;</span>
+                    <select
+                      disabled={isAnswered}
+                      value={userMap[pair.left] || ''}
+                      onChange={e => {
+                        const newUserMap = { ...userMap, [pair.left]: e.target.value };
+                        const newAnswerStr = q.pairs.map(p => `${p.left}-${newUserMap[p.left] || ''}`).join(',');
+                        setQuizMode({ ...quizMode, answers: { ...quizMode.answers, [q.id]: newAnswerStr } });
+                      }}
+                      style={{ flex: 1, padding: '8px 12px', borderRadius: 8, border: '2px solid #E2E8F0', fontSize: '0.9375rem', background: '#fff', color: '#1E293B', outline: 'none' }}
+                    >
+                      <option value="">请选择</option>
+                      {rights.map(r => (
+                        <option key={r} value={r}>{r}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            );
+          })() : q.type === 'shortanswer' ? (
+            <textarea
+              disabled={isAnswered}
+              value={quizMode.answers[q.id] || ''}
+              onChange={e => setQuizMode({ ...quizMode, answers: { ...quizMode.answers, [q.id]: e.target.value } })}
+              placeholder="请输入你的答案..."
+              rows={4}
+              style={{ width: '100%', padding: '12px 16px', borderRadius: 12, border: `2px solid ${isAnswered ? (isCorrect ? '#22C55E' : '#EF4444') : '#E2E8F0'}`, fontSize: '1rem', outline: 'none', background: '#F8FAFC', resize: 'vertical', lineHeight: 1.6 }}
+            />
           ) : (
             <input
               disabled={isAnswered}
@@ -189,9 +266,22 @@ export default function WrongQuestionsPage() {
             </div>
           )}
           <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
-            {!isAnswered && (
-              <button onClick={submitRetryAnswer} disabled={!quizMode.answers[q.id]} style={{ flex: 1, padding: '14px', borderRadius: 12, border: 'none', background: quizMode.answers[q.id] ? '#3B82F6' : '#CBD5E1', color: '#fff', fontWeight: 600, cursor: quizMode.answers[q.id] ? 'pointer' : 'not-allowed', fontSize: '1rem' }}>提交答案</button>
-            )}
+            {!isAnswered && (() => {
+              const canSubmit = (() => {
+                const a = quizMode.answers[q.id];
+                if (q.type === 'choice' || q.type === 'truefalse') return !!a;
+                if (q.type === 'fill' || q.type === 'shortanswer') return a && String(a).trim().length > 0;
+                if (q.type === 'matching') {
+                  const pairs = q.pairs || [];
+                  const cur = String(a || '');
+                  return pairs.every(p => cur.includes(p.left + '-'));
+                }
+                return !!a;
+              })();
+              return (
+                <button onClick={submitRetryAnswer} disabled={!canSubmit} style={{ flex: 1, padding: '14px', borderRadius: 12, border: 'none', background: canSubmit ? '#3B82F6' : '#CBD5E1', color: '#fff', fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', fontSize: '1rem' }}>提交答案</button>
+              );
+            })()}
             {isAnswered && (
               <button onClick={nextRetryQuestion} style={{ flex: 1, padding: '14px', borderRadius: 12, border: 'none', background: subj?.color || '#3B82F6', color: '#fff', fontWeight: 600, cursor: 'pointer', fontSize: '1rem' }}>
                 {quizMode.currentIndex < quizMode.questions.length - 1 ? '下一题' : '完成'}

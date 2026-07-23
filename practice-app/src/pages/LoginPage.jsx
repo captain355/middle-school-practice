@@ -35,9 +35,29 @@ export default function LoginPage() {
   return (
     <div style={{ maxWidth: 400, margin: '80px auto', padding: '0 24px' }}>
       <div style={{ background: '#fff', borderRadius: 16, padding: 32, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
-        <h2 style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 700, color: '#1E293B', marginBottom: 24 }}>
-          {isRegister ? '注册账号' : '欢迎登录'}
-        </h2>
+        {/* 标题区域 */}
+        {!isRegister && (
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <h2 style={{
+              fontSize: '1.5rem', fontWeight: 800, color: '#1E293B', margin: '0 0 6px 0',
+              lineHeight: 1.4,
+            }}>
+              初中各学科知识体系
+            </h2>
+            <h2 style={{
+              fontSize: '1.5rem', fontWeight: 800, margin: 0, lineHeight: 1.4,
+              background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)', WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+            }}>
+              专项练习
+            </h2>
+          </div>
+        )}
+        {isRegister && (
+          <h2 style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 700, color: '#1E293B', marginBottom: 24 }}>
+            注册账号
+          </h2>
+        )}
         <form onSubmit={handleSubmit}>
           {isRegister && (
             <div style={{ marginBottom: 16 }}>

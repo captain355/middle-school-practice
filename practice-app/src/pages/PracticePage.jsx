@@ -203,16 +203,26 @@ export default function PracticePage() {
       return;
     }
     setActiveChapter(chapter);
-    setQuizState({ questions: data.questions, currentIndex: 0, answers: {}, submitted: false });
+    setQuizState({ questions: data.questions, currentIndex: 0, answers: {}, submittedIds: [], submitted: false });
     setResults(null);
   };
 
   const submitAnswer = () => {
     const q = quizState.questions[quizState.currentIndex];
     const userAnswer = quizState.answers[q.id];
-    if (!userAnswer && userAnswer !== 0) return;
-    const newAnswers = { ...quizState, answers: { ...quizState.answers, [q.id]: userAnswer } };
-    setQuizState({ ...quizState, answers: newAnswers.answers });
+    // 填空题/简答题/连线题允许提交空答案（提交后标记为已答）
+    if (!userAnswer && userAnswer !== 0 && q.type !== 'fill' && q.type !== 'shortanswer' && q.type !== 'matching') return;
+    // 填空/简答题/连线题如果没有填入任何内容也不允许提交
+    if ((q.type === 'fill' || q.type === 'shortanswer') && (!userAnswer || !String(userAnswer).trim())) return;
+    if (q.type === 'matching') {
+      const pairs = q.pairs || [];
+      const currentAnswer = String(userAnswer || '');
+      const allSelected = pairs.every(p => currentAnswer.includes(p.left + '-'));
+      if (!allSelected) return;
+    }
+    if (!quizState.submittedIds.includes(q.id)) {
+      setQuizState({ ...quizState, submittedIds: [...quizState.submittedIds, q.id] });
+    }
   };
 
   const nextQuestion = () => {
@@ -269,7 +279,7 @@ export default function PracticePage() {
   // If in quiz mode
   if (quizState && activeChapter) {
     const q = quizState.questions[quizState.currentIndex];
-    const isAnswered = quizState.answers[q.id] !== undefined;
+    const isAnswered = quizState.submittedIds.includes(q.id);
     const isCorrect = isAnswered && isQuestionCorrect(q, quizState.answers[q.id]);
 
     // 为连线题生成稳定的打乱顺序
@@ -298,13 +308,23 @@ export default function PracticePage() {
               {quizState.questions.map((item, i) => {
                 const a = results.answers[item.id];
                 const correct = isQuestionCorrect(item, a);
+                const formatAnswer = (ans) => {
+                  if (!ans) return '未作答';
+                  if (item.type === 'matching') {
+                    return ans.split(',').map(p => {
+                      const parts = p.split('-');
+                      return parts[0] + ' → ' + parts.slice(1).join('-');
+                    }).join('；');
+                  }
+                  return ans;
+                };
                 return (
                   <div key={item.id} style={{ padding: 16, marginBottom: 12, borderRadius: 12, border: '1px solid', borderColor: correct ? '#22C55E' : '#EF4444', background: correct ? '#F0FDF4' : '#FEF2F2' }}>
                     <div style={{ fontWeight: 600, marginBottom: 6, color: '#1E293B' }}>第{i+1}题 {correct ? '✅' : '❌'}</div>
                     <div style={{ color: '#475569', marginBottom: 4 }}>{item.question}</div>
                     <div style={{ fontSize: '0.875rem' }}>
-                      <span>你的答案：<span style={{ color: correct ? '#22C55E' : '#EF4444', fontWeight: 600 }}>{a || '未作答'}</span></span>
-                      {!correct && <span style={{ marginLeft: 16 }}>正确答案：<span style={{ color: '#22C55E', fontWeight: 600 }}>{item.answer}</span></span>}
+                      <span>你的答案：<span style={{ color: correct ? '#22C55E' : '#EF4444', fontWeight: 600 }}>{formatAnswer(a)}</span></span>
+                      {!correct && <span style={{ marginLeft: 16, display: 'inline-block' }}>正确答案：<span style={{ color: '#22C55E', fontWeight: 600 }}>{formatAnswer(item.answer)}</span></span>}
                     </div>
                     <div style={{ fontSize: '0.8125rem', color: '#64748B', marginTop: 4, fontStyle: 'italic' }}>{item.explanation}</div>
                   </div>
@@ -425,13 +445,26 @@ export default function PracticePage() {
           )}
 
           <div style={{ display: 'flex', gap: 12, marginTop: 24 }}>
-            {!isAnswered && (
-              <button onClick={submitAnswer} disabled={!quizState.answers[q.id]} style={{
-                flex: 1, padding: '14px', borderRadius: 12, border: 'none',
-                background: quizState.answers[q.id] ? '#3B82F6' : '#CBD5E1', color: '#fff',
-                fontWeight: 600, cursor: quizState.answers[q.id] ? 'pointer' : 'not-allowed', fontSize: '1rem',
-              }}>提交答案</button>
-            )}
+            {!isAnswered && (() => {
+              const canSubmit = (() => {
+                const a = quizState.answers[q.id];
+                if (q.type === 'choice' || q.type === 'truefalse') return !!a;
+                if (q.type === 'fill' || q.type === 'shortanswer') return a && String(a).trim().length > 0;
+                if (q.type === 'matching') {
+                  const pairs = q.pairs || [];
+                  const cur = String(a || '');
+                  return pairs.every(p => cur.includes(p.left + '-'));
+                }
+                return !!a;
+              })();
+              return (
+                <button onClick={submitAnswer} disabled={!canSubmit} style={{
+                  flex: 1, padding: '14px', borderRadius: 12, border: 'none',
+                  background: canSubmit ? '#3B82F6' : '#CBD5E1', color: '#fff',
+                  fontWeight: 600, cursor: canSubmit ? 'pointer' : 'not-allowed', fontSize: '1rem',
+                }}>提交答案</button>
+              );
+            })()}
             {isAnswered && (
               <button onClick={nextQuestion} style={{
                 flex: 1, padding: '14px', borderRadius: 12, border: 'none',

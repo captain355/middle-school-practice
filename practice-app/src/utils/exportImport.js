@@ -53,10 +53,25 @@ export function importFromJSON(file) {
         const data = JSON.parse(e.target.result);
         let count = 0;
         Object.entries(data).forEach(([key, value]) => {
-          if (key.startsWith(STORAGE_PREFIX)) {
+          if (!key.startsWith(STORAGE_PREFIX)) return;
+          // 导入用户数据时，保留已有用户的密码（导出文件中没有密码）
+          if (key === STORAGE_PREFIX + 'users' && Array.isArray(value)) {
+            const existingUsers = (() => {
+              try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; }
+            })();
+            const mergedUsers = value.map(imported => {
+              const existing = existingUsers.find(eu => eu.username === imported.username);
+              if (existing && existing.password) {
+                // 保留已有密码，合并其他字段
+                return { ...imported, password: existing.password };
+              }
+              return imported;
+            });
+            localStorage.setItem(key, JSON.stringify(mergedUsers));
+          } else {
             localStorage.setItem(key, JSON.stringify(value));
-            count++;
           }
+          count++;
         });
         resolve(count);
       } catch (err) {
