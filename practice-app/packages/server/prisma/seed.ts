@@ -23,8 +23,8 @@ async function main() {
           emoji: subject.emoji,
           color: subject.color,
           description: subject.description,
-          tags: subject.tags,
-          gradeRange: subject.gradeRange,
+          tags: JSON.stringify(subject.tags),
+          gradeRange: JSON.stringify(subject.gradeRange),
           sortOrder: subject.sortOrder,
         },
         create: {
@@ -33,8 +33,8 @@ async function main() {
           emoji: subject.emoji,
           color: subject.color,
           description: subject.description,
-          tags: subject.tags,
-          gradeRange: subject.gradeRange,
+          tags: JSON.stringify(subject.tags),
+          gradeRange: JSON.stringify(subject.gradeRange),
           sortOrder: subject.sortOrder,
         },
       });
