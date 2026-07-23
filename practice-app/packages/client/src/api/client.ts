@@ -128,8 +128,12 @@ async function request<T = unknown>(
     return undefined as T;
   }
 
-  // 解析 JSON 响应
-  return response.json() as Promise<T>;
+  // 解析 JSON 响应（后端统一格式 { code, message, data }，自动解包 data 字段）
+  const json = await response.json();
+  if (json && typeof json === 'object' && 'code' in json && 'data' in json) {
+    return json.data as T;
+  }
+  return json as T;
 }
 
 /**

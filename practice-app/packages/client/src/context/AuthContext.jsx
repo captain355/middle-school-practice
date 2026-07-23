@@ -25,13 +25,12 @@ export function AuthProvider({ children }) {
 
   const login = async (username, password) => {
     try {
-      const res = await authApi.login(username, password);
-      if (!res.success) return { success: false, message: res.message || '用户名或密码错误' };
-      // 存储 token 和用户信息
-      localStorage.setItem('practice_app_access_token', res.data.accessToken);
-      localStorage.setItem('practice_app_refresh_token', res.data.refreshToken);
-      localStorage.setItem('practice_app_user', JSON.stringify(res.data.user));
-      setUser(res.data.user);
+      const data = await authApi.login(username, password);
+      // client.ts 已自动解包 data 字段，直接拿到 { accessToken, refreshToken, user }
+      localStorage.setItem('practice_app_access_token', data.accessToken);
+      localStorage.setItem('practice_app_refresh_token', data.refreshToken);
+      localStorage.setItem('practice_app_user', JSON.stringify(data.user));
+      setUser(data.user);
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message || '登录失败，请检查网络连接' };
@@ -40,12 +39,12 @@ export function AuthProvider({ children }) {
 
   const register = async (username, password, displayName) => {
     try {
-      const res = await authApi.register(username, password, displayName);
-      if (!res.success) return { success: false, message: res.message || '注册失败' };
-      localStorage.setItem('practice_app_access_token', res.data.accessToken);
-      localStorage.setItem('practice_app_refresh_token', res.data.refreshToken);
-      localStorage.setItem('practice_app_user', JSON.stringify(res.data.user));
-      setUser(res.data.user);
+      const data = await authApi.register(username, password, displayName);
+      // client.ts 已自动解包 data 字段
+      localStorage.setItem('practice_app_access_token', data.accessToken);
+      localStorage.setItem('practice_app_refresh_token', data.refreshToken);
+      localStorage.setItem('practice_app_user', JSON.stringify(data.user));
+      setUser(data.user);
       return { success: true };
     } catch (err) {
       return { success: false, message: err.message || '注册失败，请检查网络连接' };
