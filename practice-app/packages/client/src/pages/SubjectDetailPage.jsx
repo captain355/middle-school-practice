@@ -1,14 +1,52 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getSubjectById } from '../data/subjects';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { subjectsApi } from '../api/subjects';
+import { getSubjectById } from '../data/subjects';
 
 export default function SubjectDetailPage() {
   const { subjectId } = useParams();
   const navigate = useNavigate();
-  const subject = getSubjectById(subjectId);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
 
-  if (!subject) return <div style={{ textAlign: 'center', padding: 80 }}>学科不存在</div>;
+  // 静态展示数据（tags、gradeRange、knowledgeMap 不在数据库中）
+  const staticSubject = getSubjectById(subjectId);
+
+  // 从 API 获取教材列表（含章节数据）
+  const [subjectDetail, setSubjectDetail] = useState(null);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await subjectsApi.detail(subjectId);
+        setSubjectDetail(data);
+      } catch (err) {
+        console.error('Failed to load subject detail:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    }
+    if (subjectId) loadData();
+  }, [subjectId]);
+
+  // 合并数据：静态展示属性 + API 返回的教材列表
+  const subject = subjectDetail
+    ? {
+        ...staticSubject,
+        textbooks: subjectDetail.textbooks || [],
+      }
+    : null;
+
+  if (authLoading || pageLoading) {
+    return (
+      <div style={{ textAlign: 'center', padding: 80, color: '#64748B' }}>
+        <div style={{ fontSize: '1.125rem', marginBottom: 8 }}>加载中...</div>
+      </div>
+    );
+  }
+
+  if (!subject || !staticSubject) return <div style={{ textAlign: 'center', padding: 80 }}>学科不存在</div>;
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px' }}>
@@ -43,7 +81,7 @@ export default function SubjectDetailPage() {
       <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: 20 }}>不同版本的教材知识点编排略有差异，请选择你使用的教材</p>
       <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(subject.textbooks.length, 4)}, 1fr)`, gap: 16, marginBottom: 48 }}>
         {subject.textbooks.map(tb => (
-          <Link key={tb.id} to={`/practice/${subjectId}/${tb.id}`} style={{
+          <Link key={tb.id} to={`/practice/${subjectId}/${tb.code}`} style={{
             padding: 24, background: '#fff', borderRadius: 16,
             borderTop: `4px solid ${subject.color}`, textDecoration: 'none', color: 'inherit',
             boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'block',
@@ -55,7 +93,7 @@ export default function SubjectDetailPage() {
                 {subject.gradeRange.map(g => g + '年级').join('~')}
               </span>
               <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: subject.color + '18', color: subject.color }}>
-                {tb.knowledgePoints}个知识点
+                {(tb.chapters || []).reduce((sum, ch) => sum + (ch.knowledgePoints || 0), 0)}个知识点
               </span>
             </div>
             <button onClick={e => { if (!user) { e.preventDefault(); navigate('/login'); } }} style={{
