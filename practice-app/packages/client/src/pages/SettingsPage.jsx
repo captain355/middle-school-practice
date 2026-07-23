@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { exportAsJSON, importFromJSON, clearAllData, getDataSummary } from '../utils/exportImport';
-import { getUsers } from '../utils/storage';
+import { usersApi } from '../api/users';
 
 export default function SettingsPage() {
-  const { user, logout, isAdmin, deleteUser, toggleUserRole, resetUserPassword, toggleUserDisabled } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const [importStatus, setImportStatus] = useState(null);
@@ -14,13 +14,27 @@ export default function SettingsPage() {
   const [resetPwdTarget, setResetPwdTarget] = useState(null);
   const [newPassword, setNewPassword] = useState('');
   const [adminMsg, setAdminMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // 加载管理员用户列表
+  const loadUsers = async () => {
+    try {
+      setLoading(true);
+      const users = await usersApi.list();
+      setAllUsers(users);
+    } catch (err) {
+      setAdminMsg({ type: 'error', message: '加载用户列表失败：' + (err.message || '未知错误') });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 进入页面时自动加载数据概览
   useEffect(() => {
     if (user) {
       setSummary(getDataSummary());
       if (isAdmin) {
-        setAllUsers(getUsers());
+        loadUsers();
       }
     }
   }, [user, isAdmin]);
@@ -56,53 +70,81 @@ export default function SettingsPage() {
   };
 
   // 管理员操作
-  const handleDeleteUser = (username) => {
-    if (username === user.username) {
+  const handleDeleteUser = async (u) => {
+    if (u.id === user.id) {
       setAdminMsg({ type: 'error', message: '不能删除当前登录的管理员账号' });
       return;
     }
-    if (!confirm(`确定要删除用户"${username}"吗？该用户的所有数据（练习记录、错题本等）将保留。`)) return;
-    deleteUser(username);
-    setAllUsers(getUsers());
-    setAdminMsg({ type: 'success', message: `已删除用户"${username}"` });
+    if (!confirm(`确定要删除用户"${u.username}"吗？该用户的所有数据（练习记录、错题本等）将保留。`)) return;
+    try {
+      setLoading(true);
+      await usersApi.deleteUser(u.id);
+      setAdminMsg({ type: 'success', message: `已删除用户"${u.username}"` });
+      await loadUsers();
+    } catch (err) {
+      setAdminMsg({ type: 'error', message: '删除失败：' + (err.message || '未知错误') });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleToggleRole = (username, currentRole) => {
-    const newRole = currentRole === 'admin' ? 'user' : 'admin';
-    if (username === user.username && newRole === 'user') {
-      // 如果把当前管理员降为普通用户，需要确认
+  const handleToggleRole = async (u, currentRole) => {
+    const newRole = currentRole === 'admin' ? 'student' : 'admin';
+    if (u.id === user.id && newRole === 'student') {
       if (!confirm('将你的账号从管理员降为普通用户后，需要重新登录才能生效。确定继续吗？')) return;
     }
-    toggleUserRole(username);
-    setAllUsers(getUsers());
-    setAdminMsg({ type: 'success', message: `已将"${username}"的角色变更为${newRole === 'admin' ? '管理员' : '普通用户'}` });
-    if (username === user.username && newRole === 'user') {
-      setTimeout(() => { logout(); navigate('/login'); }, 1500);
+    try {
+      setLoading(true);
+      await usersApi.updateRole(u.id, newRole);
+      setAdminMsg({ type: 'success', message: `已将"${u.username}"的角色变更为${newRole === 'admin' ? '管理员' : '普通用户'}` });
+      if (u.id === user.id && newRole === 'student') {
+        setTimeout(() => { logout(); navigate('/login'); }, 1500);
+      } else {
+        await loadUsers();
+      }
+    } catch (err) {
+      setAdminMsg({ type: 'error', message: '修改角色失败：' + (err.message || '未知错误') });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleResetPwd = () => {
+  const handleResetPwd = async () => {
     if (!resetPwdTarget || !newPassword.trim()) return;
     if (newPassword.length < 4) {
       setAdminMsg({ type: 'error', message: '密码至少4位' });
       return;
     }
-    resetUserPassword(resetPwdTarget, newPassword.trim());
-    setAdminMsg({ type: 'success', message: `已重置用户"${resetPwdTarget}"的密码` });
-    setResetPwdTarget(null);
-    setNewPassword('');
+    try {
+      setLoading(true);
+      await usersApi.resetPassword(resetPwdTarget.id, newPassword.trim());
+      setAdminMsg({ type: 'success', message: `已重置用户"${resetPwdTarget.displayName}"的密码` });
+      setResetPwdTarget(null);
+      setNewPassword('');
+    } catch (err) {
+      setAdminMsg({ type: 'error', message: '重置密码失败：' + (err.message || '未知错误') });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleToggleDisabled = (username, displayName, isCurrentlyDisabled) => {
-    if (username === user.username) {
+  const handleToggleDisabled = async (u) => {
+    if (u.id === user.id) {
       setAdminMsg({ type: 'error', message: '不能停用当前登录的管理员账号' });
       return;
     }
-    const action = isCurrentlyDisabled ? '启用' : '停用';
-    if (!confirm(`确定要${action}用户"${displayName}"吗？${isCurrentlyDisabled ? '启用后该用户可以正常登录。' : '停用后该用户将无法登录，但数据会保留。'}`)) return;
-    toggleUserDisabled(username);
-    setAllUsers(getUsers());
-    setAdminMsg({ type: 'success', message: `已${action}用户"${displayName}"` });
+    const action = u.isDisabled ? '启用' : '停用';
+    if (!confirm(`确定要${action}用户"${u.displayName || u.username}"吗？${u.isDisabled ? '启用后该用户可以正常登录。' : '停用后该用户将无法登录，但数据会保留。'}`)) return;
+    try {
+      setLoading(true);
+      await usersApi.toggleDisabled(u.id);
+      setAdminMsg({ type: 'success', message: `已${action}用户"${u.displayName || u.username}"` });
+      await loadUsers();
+    } catch (err) {
+      setAdminMsg({ type: 'error', message: `${action}失败：` + (err.message || '未知错误') });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!user) return (
@@ -168,7 +210,7 @@ export default function SettingsPage() {
           {/* 重置密码弹窗 */}
           {resetPwdTarget && (
             <div style={{ padding: 16, marginBottom: 16, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 12 }}>
-              <div style={{ fontWeight: 600, color: '#92400E', marginBottom: 8 }}>重置密码 - {resetPwdTarget}</div>
+              <div style={{ fontWeight: 600, color: '#92400E', marginBottom: 8 }}>重置密码 - {resetPwdTarget.displayName}</div>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <input
                   value={newPassword}
@@ -195,27 +237,27 @@ export default function SettingsPage() {
           ) : (
             <div style={{ display: 'grid', gap: 8 }}>
               {allUsers.map(u => (
-                <div key={u.username} style={{
+                <div key={u.id} style={{
                   display: 'flex', alignItems: 'center', gap: 12, padding: 14,
-                  background: u.disabled ? '#F9FAFB' : u.username === user.username ? '#F0F9FF' : '#F8FAFC',
+                  background: u.isDisabled ? '#F9FAFB' : u.username === user.username ? '#F0F9FF' : '#F8FAFC',
                   borderRadius: 10,
-                  border: u.disabled ? '1px solid #E5E7EB' : u.username === user.username ? '1px solid #BAE6FD' : '1px solid #E2E8F0',
-                  opacity: u.disabled ? 0.7 : 1,
+                  border: u.isDisabled ? '1px solid #E5E7EB' : u.username === user.username ? '1px solid #BAE6FD' : '1px solid #E2E8F0',
+                  opacity: u.isDisabled ? 0.7 : 1,
                 }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: '50%',
-                    background: u.disabled ? '#F3F4F6' : u.role === 'admin' ? '#FEF3C7' : '#EFF6FF',
+                    background: u.isDisabled ? '#F3F4F6' : u.role === 'admin' ? '#FEF3C7' : '#EFF6FF',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.875rem',
-                    color: u.disabled ? '#9CA3AF' : u.role === 'admin' ? '#92400E' : '#3B82F6',
+                    color: u.isDisabled ? '#9CA3AF' : u.role === 'admin' ? '#92400E' : '#3B82F6',
                     fontWeight: 700, position: 'relative',
                   }}>
                     {u.role === 'admin' ? '盾' : '人'}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, color: u.disabled ? '#9CA3AF' : '#1E293B', fontSize: '0.9375rem' }}>
+                    <div style={{ fontWeight: 600, color: u.isDisabled ? '#9CA3AF' : '#1E293B', fontSize: '0.9375rem' }}>
                       {u.displayName || u.username}
                       {u.username === user.username && <span style={{ fontSize: '0.75rem', color: '#3B82F6', marginLeft: 8 }}>(当前)</span>}
-                      {u.disabled && <span style={{ fontSize: '0.75rem', color: '#EF4444', marginLeft: 8, fontWeight: 500 }}>已停用</span>}
+                      {u.isDisabled && <span style={{ fontSize: '0.75rem', color: '#EF4444', marginLeft: 8, fontWeight: 500 }}>已停用</span>}
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: 2 }}>
                       @{u.username} · {u.role === 'admin' ? '管理员' : '普通用户'}
@@ -224,46 +266,48 @@ export default function SettingsPage() {
                   </div>
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                     <button
-                      onClick={() => handleToggleRole(u.username, u.role)}
+                      onClick={() => handleToggleRole(u, u.role)}
                       title={u.role === 'admin' ? '降为普通用户' : '升为管理员'}
-                      disabled={u.disabled}
+                      disabled={u.isDisabled || loading}
                       style={{
-                        padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', cursor: u.disabled ? 'not-allowed' : 'pointer',
+                        padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', cursor: u.isDisabled ? 'not-allowed' : 'pointer',
                         border: `1px solid ${u.role === 'admin' ? '#F59E0B' : '#3B82F6'}`,
-                        background: u.disabled ? '#F3F4F6' : u.role === 'admin' ? '#FFFBEB' : '#EFF6FF',
-                        color: u.disabled ? '#9CA3AF' : u.role === 'admin' ? '#92400E' : '#1D4ED8',
-                        opacity: u.disabled ? 0.5 : 1,
+                        background: u.isDisabled ? '#F3F4F6' : u.role === 'admin' ? '#FFFBEB' : '#EFF6FF',
+                        color: u.isDisabled ? '#9CA3AF' : u.role === 'admin' ? '#92400E' : '#1D4ED8',
+                        opacity: u.isDisabled ? 0.5 : 1,
                       }}
                     >
                       {u.role === 'admin' ? '降级' : '升级'}
                     </button>
                     <button
-                      onClick={() => { setResetPwdTarget(u.username); setNewPassword(''); setAdminMsg(null); }}
-                      disabled={u.disabled}
+                      onClick={() => { setResetPwdTarget({ id: u.id, displayName: u.displayName || u.username }); setNewPassword(''); setAdminMsg(null); }}
+                      disabled={u.isDisabled || loading}
                       style={{
-                        padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', cursor: u.disabled ? 'not-allowed' : 'pointer',
-                        border: '1px solid #E2E8F0', background: '#fff', color: u.disabled ? '#9CA3AF' : '#475569',
-                        opacity: u.disabled ? 0.5 : 1,
+                        padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', cursor: u.isDisabled ? 'not-allowed' : 'pointer',
+                        border: '1px solid #E2E8F0', background: '#fff', color: u.isDisabled ? '#9CA3AF' : '#475569',
+                        opacity: u.isDisabled ? 0.5 : 1,
                       }}
                     >
                       重置密码
                     </button>
                     {u.username !== user.username && (
                       <button
-                        onClick={() => handleToggleDisabled(u.username, u.displayName || u.username, !!u.disabled)}
+                        onClick={() => handleToggleDisabled(u)}
+                        disabled={loading}
                         style={{
                           padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', cursor: 'pointer',
-                          border: `1px solid ${u.disabled ? '#22C55E' : '#F59E0B'}`,
-                          background: u.disabled ? '#F0FDF4' : '#FFFBEB',
-                          color: u.disabled ? '#15803D' : '#92400E',
+                          border: `1px solid ${u.isDisabled ? '#22C55E' : '#F59E0B'}`,
+                          background: u.isDisabled ? '#F0FDF4' : '#FFFBEB',
+                          color: u.isDisabled ? '#15803D' : '#92400E',
                         }}
                       >
-                        {u.disabled ? '启用' : '停用'}
+                        {u.isDisabled ? '启用' : '停用'}
                       </button>
                     )}
                     {u.username !== user.username && (
                       <button
-                        onClick={() => handleDeleteUser(u.username)}
+                        onClick={() => handleDeleteUser(u)}
+                        disabled={loading}
                         style={{
                           padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', cursor: 'pointer',
                           border: '1px solid #FCA5A5', background: '#fff', color: '#DC2626',

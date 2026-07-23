@@ -1,52 +1,64 @@
 /**
  * 用户相关 API 模块
- * 提供用户信息获取、密码修改等接口
+ * 提供用户信息获取、密码修改、管理员用户管理等接口
  */
 
-import { get, put } from './client';
+import { get, put, post, del } from './client';
 
 /**
  * 用户资料数据结构
  */
 export interface UserProfile {
-  /** 用户唯一标识 */
   id: string;
-  /** 用户名（登录账号） */
   username: string;
-  /** 显示名称 */
   displayName: string;
-  /** 用户角色 */
   role: string;
-  /** 账号是否被禁用 */
+  avatar: string | null;
   isDisabled: boolean;
-  /** 所属学校 ID（可选） */
-  schoolId?: string;
-  /** 所属班级 ID（可选） */
-  classId?: string;
-  /** 年级（可选） */
-  grade?: number;
-  /** 账号创建时间 */
+  schoolId: string | null;
+  classId: string | null;
+  grade: number | null;
+  lastLoginAt: string | null;
   createdAt: string;
+  studentClass?: { id: string; name: string; grade: number } | null;
+  school?: { id: string; name: string } | null;
 }
 
 /**
  * 用户 API 对象
- * 封装所有与用户相关的远程调用
  */
 export const usersApi = {
-  /**
-   * 获取当前登录用户的资料
-   * @returns 用户资料
-   */
+  /** 获取当前登录用户的资料 */
   getMe: () =>
     get<UserProfile>('/users/me'),
 
-  /**
-   * 修改当前用户密码
-   * @param oldPassword - 旧密码
-   * @param newPassword - 新密码
-   * @returns 操作结果
-   */
+  /** 修改当前用户密码 */
   changePassword: (oldPassword: string, newPassword: string) =>
     put('/users/me/password', { oldPassword, newPassword }),
+
+  /** 更新当前用户资料 */
+  updateProfile: (data: { displayName?: string; avatar?: string }) =>
+    put('/users/me/profile', data),
+
+  // ---- 管理员接口 ----
+
+  /** 获取所有用户列表 */
+  list: () =>
+    get<UserProfile[]>('/users/admin/users'),
+
+  /** 管理员重置用户密码 */
+  resetPassword: (userId: string, newPassword: string) =>
+    post(`/users/admin/users/${userId}/reset-password`, { newPassword }),
+
+  /** 管理员修改用户角色 */
+  updateRole: (userId: string, role: string) =>
+    put(`/users/admin/users/${userId}/role`, { role }),
+
+  /** 管理员停用/启用用户 */
+  toggleDisabled: (userId: string) =>
+    put(`/users/admin/users/${userId}/toggle-disabled`),
+
+  /** 管理员删除用户 */
+  deleteUser: (userId: string) =>
+    del(`/users/admin/users/${userId}`),
 };

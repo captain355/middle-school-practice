@@ -80,6 +80,10 @@ export async function register(
     throw new Error('用户名已被占用');
   }
 
+  // 判断是否为第一个注册用户（自动成为管理员）
+  const userCount = await prisma.user.count();
+  const role = userCount === 0 ? 'admin' : 'student';
+
   // 加密密码
   const passwordHash = await hashPassword(password);
 
@@ -89,6 +93,7 @@ export async function register(
       username,
       passwordHash,
       displayName,
+      role,
     },
   });
 
