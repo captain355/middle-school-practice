@@ -156,14 +156,13 @@ async function tryRefreshToken(): Promise<boolean> {
   isRefreshing = true;
 
   try {
-    // 发送刷新请求（注意：此请求使用原始 refresh token，不走 request 方法，避免递归）
+    // 发送刷新请求（后端从 req.body.refreshToken 获取）
     const response = await fetch(`${BASE_URL}/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${refreshToken}`,
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ refreshToken }),
     });
 
     if (!response.ok) {
@@ -172,7 +171,10 @@ async function tryRefreshToken(): Promise<boolean> {
       return false;
     }
 
-    const result = await response.json();
+    const json = await response.json();
+
+    // 后端统一格式 { code, message, data }，解包 data
+    const result = json.data || json;
 
     // 保存新的 Token
     if (result.accessToken) {

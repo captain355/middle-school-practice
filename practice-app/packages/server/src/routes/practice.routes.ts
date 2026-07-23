@@ -7,16 +7,15 @@ const practiceRoutes = Router();
 
 // 提交练习的请求参数校验
 const submitSchema = z.object({
-  chapterId: z.string().uuid('章节ID格式不正确'),
+  chapterId: z.string().min(1, '章节ID不能为空'),
   subjectId: z.string().min(1, '学科ID不能为空'),
-  textbookId: z.string().uuid('教材ID格式不正确').optional(),
+  textbookId: z.string().optional(),
   score: z.number().int().min(0, '分数不能为负数'),
   correct: z.number().int().min(0, '正确数不能为负数'),
   total: z.number().int().min(1, '总题数至少为1'),
   duration: z.number().int().min(0, '时长不能为负数').optional(),
-  // 错题列表：每项包含题目ID和用户答案
   wrongAnswers: z.array(z.object({
-    questionId: z.string().uuid('题目ID格式不正确'),
+    questionId: z.string().min(1, '题目ID不能为空'),
     userAnswer: z.string(),
   })).optional(),
 });
@@ -25,6 +24,32 @@ const submitSchema = z.object({
 const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
+
+/**
+ * GET /questions/chapter/:chapterId - 按章节获取题目列表
+ */
+practiceRoutes.get('/questions/chapter/:chapterId', async (req: Request, res: Response) => {
+  try {
+    const questions = await practiceService.getQuestionsByChapter(req.params.chapterId);
+    success(res, questions);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : '获取题目列表失败';
+    error(res, 500, message);
+  }
+});
+
+/**
+ * GET /questions/key/:chapterKey - 按 chapterKey 获取题目列表
+ */
+practiceRoutes.get('/questions/key/:chapterKey', async (req: Request, res: Response) => {
+  try {
+    const questions = await practiceService.getQuestionsByChapterKey(req.params.chapterKey);
+    success(res, questions);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : '获取题目列表失败';
+    error(res, 500, message);
+  }
 });
 
 /**
@@ -69,7 +94,7 @@ practiceRoutes.get('/records', async (req: Request, res: Response) => {
 });
 
 /**
- * GET /progress - 获取学习进度
+ * GET /progress - 获取学习进度（含章节和学科信息）
  */
 practiceRoutes.get('/progress', async (req: Request, res: Response) => {
   try {
@@ -135,6 +160,20 @@ practiceRoutes.get('/checkin', async (req: Request, res: Response) => {
     success(res, streak);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : '获取打卡信息失败';
+    error(res, 500, message);
+  }
+});
+
+/**
+ * GET /stats - 获取练习统计汇总
+ */
+practiceRoutes.get('/stats', async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const stats = await practiceService.getStats(userId);
+    success(res, stats);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : '获取统计信息失败';
     error(res, 500, message);
   }
 });

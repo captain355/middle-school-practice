@@ -1,61 +1,66 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getWrongQuestions, removeWrongQuestion } from '../utils/storage';
-import { getSubjectById } from '../data/subjects';
+import { practiceApi } from '../api/practice';
 
 export default function WrongQuestionsPage() {
   const { user } = useAuth();
+  const [allWrong, setAllWrong] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filterSubject, setFilterSubject] = useState('all');
   const [filterChapter, setFilterChapter] = useState('all');
-  const [refresh, setRefresh] = useState(0);
   const [expandedId, setExpandedId] = useState(null);
-  const [quizMode, setQuizMode] = useState(null); // { questions, currentIndex, answers, submitted }
+  const [quizMode, setQuizMode] = useState(null);
+
+  useEffect(() => {
+    if (!user) { setLoading(false); return; }
+    let cancelled = false;
+    setLoading(true);
+    practiceApi.wrongQuestions()
+      .then(list => { if (!cancelled) { setAllWrong(Array.isArray(list) ? list : []); setLoading(false); } })
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [user]);
 
   const wrongList = useMemo(() => {
-    if (!user) return [];
-    let list = getWrongQuestions(user.username);
+    let list = allWrong;
     if (filterSubject !== 'all') list = list.filter(q => q.subjectId === filterSubject);
     if (filterChapter !== 'all') list = list.filter(q => q.chapterName === filterChapter);
     return list;
-  }, [user, filterSubject, filterChapter, refresh]);
+  }, [allWrong, filterSubject, filterChapter]);
 
-  // 获取已筛选学科下的章节列表
   const chapterOptions = useMemo(() => {
-    if (!user) return [];
-    let list = getWrongQuestions(user.username);
+    let list = allWrong;
     if (filterSubject !== 'all') list = list.filter(q => q.subjectId === filterSubject);
     const chapters = [...new Set(list.map(q => q.chapterName))];
     return chapters.filter(Boolean);
-  }, [user, filterSubject, refresh]);
+  }, [allWrong, filterSubject]);
+
+  const subjectFilters = useMemo(() => {
+    const seen = {};
+    return allWrong.filter(q => q.subjectId && !seen[q.subjectId] && (seen[q.subjectId] = true));
+  }, [allWrong]);
+
+  const reloadWrong = () => {
+    if (!user) return;
+    practiceApi.wrongQuestions().then(list => setAllWrong(Array.isArray(list) ? list : []));
+  };
 
   const handleRemove = (qId) => {
-    removeWrongQuestion(user.username, qId);
-    setRefresh(r => r + 1);
+    practiceApi.removeWrong(qId).then(() => reloadWrong());
   };
 
   const handleClearFiltered = () => {
-    if (!confirm('确定要清空当前筛选条件下的所有错题吗？')) return;
-    const allWrong = getWrongQuestions(user.username);
-    const toKeep = allWrong.filter(q => {
-      if (filterSubject !== 'all' && q.subjectId !== filterSubject) return true;
-      if (filterChapter !== 'all' && q.chapterName !== filterChapter) return true;
-      return false;
-    });
-    localStorage.setItem('practice_app_wrong_' + user.username, JSON.stringify(toKeep));
-    setRefresh(r => r + 1);
+    // 后端暂不支持批量删除，保留为空操作
   };
 
   const handleClearAll = () => {
-    if (!confirm('确定要清空所有错题吗？')) return;
-    localStorage.removeItem('practice_app_wrong_' + user.username);
-    setRefresh(r => r + 1);
+    // 后端暂不支持批量删除，保留为空操作
   };
 
-  // 重新练习模式
   const startRetryQuiz = () => {
     if (wrongList.length === 0) return;
     setQuizMode({
-      questions: wrongList.slice(0, 20), // 最多练习20题
+      questions: wrongList.slice(0, 20),
       currentIndex: 0,
       answers: {},
       submittedIds: [],
@@ -89,10 +94,9 @@ export default function WrongQuestionsPage() {
 
   const finishRetry = () => {
     setQuizMode(null);
-    setRefresh(r => r + 1);
+    reloadWrong();
   };
 
-  // 重置筛选
   const resetFilter = () => {
     setFilterSubject('all');
     setFilterChapter('all');
@@ -100,10 +104,11 @@ export default function WrongQuestionsPage() {
 
   if (!user) return <div style={{ textAlign: 'center', padding: 80, color: '#64748B' }}>请先登录查看错题本</div>;
 
-  // 重新练习 UI
+  if (loading) return <div style={{ textAlign: 'center', padding: 80, color: '#64748B' }}>加载中...</div>;
+
   if (quizMode) {
     const q = quizMode.questions[quizMode.currentIndex];
-    const subj = getSubjectById(q.subjectId);
+    const subjColor = q.subjectColor || '#3B82F6';
     const isAnswered = quizMode.submittedIds.includes(q.id);
     const isCorrect = isAnswered && (
       q.type === 'matching' ? (() => {
@@ -158,7 +163,7 @@ export default function WrongQuestionsPage() {
                 return (
                   <div key={i} style={{ padding: 16, borderRadius: 12, border: '1px solid', borderColor: ok ? '#22C55E' : '#EF4444', background: ok ? '#F0FDF4' : '#FEF2F2' }}>
                     <div style={{ fontWeight: 600, marginBottom: 6, color: '#1E293B' }}>第{i+1}题 {ok ? '✅' : '❌'}</div>
-                    <div style={{ color: '#475569', marginBottom: 4 }}>{item.question}</div>
+                    <div style={{ color: '#475569', marginBottom: 4 }}>{item.questionText}</div>
                     <div style={{ fontSize: '0.875rem' }}>
                       <span>你的答案：<span style={{ color: ok ? '#22C55E' : '#EF4444', fontWeight: 600 }}>{a || '未作答'}</span></span>
                       {!ok && <span style={{ marginLeft: 16 }}>正确答案：<span style={{ color: '#22C55E', fontWeight: 600 }}>{item.answer}</span></span>}
@@ -181,18 +186,18 @@ export default function WrongQuestionsPage() {
       <div style={{ maxWidth: 800, margin: '40px auto', padding: '0 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
           <div style={{ flex: 1, height: 6, borderRadius: 3, background: '#E2E8F0' }}>
-            <div style={{ width: `${((quizMode.currentIndex + 1) / quizMode.questions.length) * 100}%`, height: 6, borderRadius: 3, background: subj?.color || '#3B82F6' }} />
+            <div style={{ width: `${((quizMode.currentIndex + 1) / quizMode.questions.length) * 100}%`, height: 6, borderRadius: 3, background: subjColor }} />
           </div>
           <span style={{ fontSize: '0.875rem', color: '#64748B' }}>{quizMode.currentIndex + 1}/{quizMode.questions.length}</span>
         </div>
         <div style={{ background: '#fff', borderRadius: 16, padding: 32, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: (subj?.color || '#3B82F6') + '18', color: subj?.color || '#3B82F6', fontWeight: 600 }}>
+            <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: subjColor + '18', color: subjColor, fontWeight: 600 }}>
               {q.type === 'choice' ? '选择题' : q.type === 'fill' ? '填空题' : q.type === 'matching' ? '连线题' : q.type === 'shortanswer' ? '简答题' : '判断题'}
             </span>
             <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: '#FEF3C7', color: '#92400E' }}>错题重练</span>
           </div>
-          <h3 style={{ fontSize: '1.125rem', color: '#1E293B', marginBottom: 24, lineHeight: 1.6 }}>{q.question}</h3>
+          <h3 style={{ fontSize: '1.125rem', color: '#1E293B', marginBottom: 24, lineHeight: 1.6 }}>{q.questionText}</h3>
           {q.type === 'choice' || q.type === 'truefalse' ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {q.options.map((opt, i) => (
@@ -283,7 +288,7 @@ export default function WrongQuestionsPage() {
               );
             })()}
             {isAnswered && (
-              <button onClick={nextRetryQuestion} style={{ flex: 1, padding: '14px', borderRadius: 12, border: 'none', background: subj?.color || '#3B82F6', color: '#fff', fontWeight: 600, cursor: 'pointer', fontSize: '1rem' }}>
+              <button onClick={nextRetryQuestion} style={{ flex: 1, padding: '14px', borderRadius: 12, border: 'none', background: subjColor, color: '#fff', fontWeight: 600, cursor: 'pointer', fontSize: '1rem' }}>
                 {quizMode.currentIndex < quizMode.questions.length - 1 ? '下一题' : '完成'}
               </button>
             )}
@@ -293,7 +298,6 @@ export default function WrongQuestionsPage() {
     );
   }
 
-  // 主列表 UI
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 24px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
@@ -302,8 +306,6 @@ export default function WrongQuestionsPage() {
           {wrongList.length > 0 && (
             <>
               <button onClick={startRetryQuiz} style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: '#3B82F6', color: '#fff', fontSize: '0.875rem', cursor: 'pointer', fontWeight: 600 }}>错题重练</button>
-              <button onClick={handleClearFiltered} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #F59E0B', background: '#fff', color: '#F59E0B', fontSize: '0.875rem', cursor: 'pointer' }}>清空当前</button>
-              <button onClick={handleClearAll} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #EF4444', background: '#fff', color: '#EF4444', fontSize: '0.875rem', cursor: 'pointer' }}>清空全部</button>
             </>
           )}
         </div>
@@ -317,15 +319,12 @@ export default function WrongQuestionsPage() {
             padding: '5px 12px', borderRadius: 6, border: `1px solid ${filterSubject === 'all' ? '#3B82F6' : '#E2E8F0'}`,
             background: filterSubject === 'all' ? '#3B82F6' : '#fff', color: filterSubject === 'all' ? '#fff' : '#64748B', cursor: 'pointer', fontSize: '0.8125rem',
           }}>全部</button>
-          {[...new Set(getWrongQuestions(user.username).map(q => q.subjectId))].map(sid => {
-            const subj = getSubjectById(sid);
-            return subj ? (
-              <button key={sid} onClick={() => { setFilterSubject(sid); setFilterChapter('all'); }} style={{
-                padding: '5px 12px', borderRadius: 6, border: `1px solid ${filterSubject === sid ? subj.color : '#E2E8F0'}`,
-                background: filterSubject === sid ? subj.color : '#fff', color: filterSubject === sid ? '#fff' : '#64748B', cursor: 'pointer', fontSize: '0.8125rem',
-              }}>{subj.name}</button>
-            ) : null;
-          })}
+          {subjectFilters.map(q => (
+            <button key={q.subjectId} onClick={() => { setFilterSubject(q.subjectId); setFilterChapter('all'); }} style={{
+              padding: '5px 12px', borderRadius: 6, border: `1px solid ${filterSubject === q.subjectId ? (q.subjectColor || '#E2E8F0') : '#E2E8F0'}`,
+              background: filterSubject === q.subjectId ? (q.subjectColor || '#3B82F6') : '#fff', color: filterSubject === q.subjectId ? '#fff' : '#64748B', cursor: 'pointer', fontSize: '0.8125rem',
+            }}>{q.subjectName || q.subjectId}</button>
+          ))}
         </div>
         {chapterOptions.length > 0 && (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -358,19 +357,18 @@ export default function WrongQuestionsPage() {
       ) : (
         <div style={{ display: 'grid', gap: 12 }}>
           {wrongList.map((q, i) => {
-            const subj = getSubjectById(q.subjectId);
             const isExpanded = expandedId === q.id;
             return (
-              <div key={`${q.id}-${q.lastWrongAt}`} style={{ padding: 20, background: '#fff', borderRadius: 12, borderLeft: `4px solid ${subj?.color || '#EF4444'}`, boxShadow: '0 2px 6px rgba(0,0,0,0.04)', cursor: 'pointer' }} onClick={() => setExpandedId(isExpanded ? null : q.id)}>
+              <div key={`${q.id}-${q.lastWrongAt}`} style={{ padding: 20, background: '#fff', borderRadius: 12, borderLeft: `4px solid ${q.subjectColor || '#EF4444'}`, boxShadow: '0 2px 6px rgba(0,0,0,0.04)', cursor: 'pointer' }} onClick={() => setExpandedId(isExpanded ? null : q.id)}>
                 <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 12 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: (subj?.color || '#EF4444') + '18', color: subj?.color || '#EF4444' }}>{subj?.name || ''}</span>
+                      <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: (q.subjectColor || '#EF4444') + '18', color: q.subjectColor || '#EF4444' }}>{q.subjectName || ''}</span>
                       {q.chapterName && <span style={{ padding: '2px 8px', borderRadius: 6, fontSize: '0.75rem', background: '#F1F5F9', color: '#64748B' }}>{q.chapterName}</span>}
                       <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>错 {q.wrongCount || 1} 次</span>
-                      <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{new Date(q.lastWrongAt || q.addedAt).toLocaleDateString()}</span>
+                      <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{new Date(q.lastWrongAt).toLocaleDateString()}</span>
                     </div>
-                    <div style={{ fontWeight: 600, color: '#1E293B', marginBottom: 4, lineHeight: 1.5 }}>{q.question}</div>
+                    <div style={{ fontWeight: 600, color: '#1E293B', marginBottom: 4, lineHeight: 1.5 }}>{q.questionText}</div>
                     {!isExpanded && (
                       <div style={{ fontSize: '0.8125rem', color: '#94A3B8' }}>点击展开详情 ▾</div>
                     )}
