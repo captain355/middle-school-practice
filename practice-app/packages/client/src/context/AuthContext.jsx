@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getUsers, saveUsers, getCurrentUser, setCurrentUser, clearCurrentUser } from '../utils/storage';
+import { authApi, usersApi } from '../api';
 
 const AuthContext = createContext(null);
 
@@ -7,109 +7,111 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // 从 localStorage 恢复 token 和用户信息
   useEffect(() => {
-    const saved = getCurrentUser();
-    if (saved) {
-      // 兼容旧用户数据：没有 role 字段时补全
-      if (!saved.role) {
-        const users = getUsers();
-        const fullUser = users.find(u => u.username === saved.username);
-        if (fullUser) {
-          if (!fullUser.role) {
-            fullUser.role = users[0]?.username === fullUser.username ? 'admin' : 'user';
-            saveUsers(users);
-          }
-          setUser(fullUser);
-          setCurrentUser(fullUser);
-        } else {
-          setUser(saved);
-        }
-      } else {
-        setUser(saved);
+    const token = localStorage.getItem('practice_app_access_token');
+    const savedUser = localStorage.getItem('practice_app_user');
+    if (token && savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        localStorage.removeItem('practice_app_access_token');
+        localStorage.removeItem('practice_app_refresh_token');
+        localStorage.removeItem('practice_app_user');
       }
     }
     setLoading(false);
   }, []);
 
-  const login = (username, password) => {
-    const users = getUsers();
-    const found = users.find(u => u.username === username && u.password === password);
-    if (!found) return { success: false, message: '用户名或密码错误' };
-    // 检查账号是否被停用
-    if (found.disabled) return { success: false, message: '该账号已被停用，请联系管理员' };
-    // 兼容旧用户数据：如果没有 role 字段，第一个用户默认为管理员
-    if (!found.role) {
-      found.role = users[0]?.username === found.username ? 'admin' : 'user';
-      saveUsers(users);
+  const login = async (username, password) => {
+    try {
+      const res = await authApi.login(username, password);
+      if (!res.success) return { success: false, message: res.message || '用户名或密码错误' };
+      // 存储 token 和用户信息
+      localStorage.setItem('practice_app_access_token', res.data.accessToken);
+      localStorage.setItem('practice_app_refresh_token', res.data.refreshToken);
+      localStorage.setItem('practice_app_user', JSON.stringify(res.data.user));
+      setUser(res.data.user);
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.message || '登录失败，请检查网络连接' };
     }
-    setUser(found);
-    setCurrentUser(found);
-    return { success: true };
   };
 
-  const register = (username, password, displayName) => {
-    const users = getUsers();
-    if (users.find(u => u.username === username)) {
-      return { success: false, message: '用户名已存在' };
+  const register = async (username, password, displayName) => {
+    try {
+      const res = await authApi.register(username, password, displayName);
+      if (!res.success) return { success: false, message: res.message || '注册失败' };
+      localStorage.setItem('practice_app_access_token', res.data.accessToken);
+      localStorage.setItem('practice_app_refresh_token', res.data.refreshToken);
+      localStorage.setItem('practice_app_user', JSON.stringify(res.data.user));
+      setUser(res.data.user);
+      return { success: true };
+    } catch (err) {
+      return { success: false, message: err.message || '注册失败，请检查网络连接' };
     }
-    // 第一个注册的用户自动成为管理员
-    const role = users.length === 0 ? 'admin' : 'user';
-    const newUser = { username, password, displayName: displayName || username, role, createdAt: Date.now() };
-    users.push(newUser);
-    saveUsers(users);
-    setUser(newUser);
-    setCurrentUser(newUser);
-    return { success: true };
   };
 
   const logout = () => {
     setUser(null);
-    clearCurrentUser();
+    localStorage.removeItem('practice_app_access_token');
+    localStorage.removeItem('practice_app_refresh_token');
+    localStorage.removeItem('practice_app_user');
   };
 
-  // 管理员操作
+  // 管理员操作 — 这些仍依赖 localStorage 中的本地用户列表
+  // 后续将迁移到管理员 API
   const isAdmin = user?.role === 'admin';
 
   const deleteUser = (username) => {
     if (!isAdmin) return false;
-    const users = getUsers().filter(u => u.username !== username);
-    saveUsers(users);
-    return true;
+    try {
+      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
+      const filtered = users.filter(u => u.username !== username);
+      localStorage.setItem('practice_app_users', JSON.stringify(filtered));
+      return true;
+    } catch { return false; }
   };
 
   const toggleUserRole = (username) => {
     if (!isAdmin) return false;
-    const users = getUsers();
-    const target = users.find(u => u.username === username);
-    if (!target) return false;
-    target.role = target.role === 'admin' ? 'user' : 'admin';
-    saveUsers(users);
-    // 如果修改的是当前用户，更新 context
-    if (username === user.username) {
-      setUser({ ...user, role: target.role });
-      setCurrentUser({ ...user, role: target.role });
-    }
-    return true;
+    try {
+      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
+      const target = users.find(u => u.username === username);
+      if (!target) return false;
+      target.role = target.role === 'admin' ? 'user' : 'admin';
+      localStorage.setItem('practice_app_users', JSON.stringify(users));
+      if (username === user.username) {
+        const updated = { ...user, role: target.role };
+        setUser(updated);
+        localStorage.setItem('practice_app_user', JSON.stringify(updated));
+      }
+      return true;
+    } catch { return false; }
   };
 
   const resetUserPassword = (username, newPassword) => {
     if (!isAdmin) return false;
-    const users = getUsers();
-    const target = users.find(u => u.username === username);
-    if (!target) return false;
-    target.password = newPassword;
-    saveUsers(users);
-    return true;
+    try {
+      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
+      const target = users.find(u => u.username === username);
+      if (!target) return false;
+      target.password = newPassword;
+      localStorage.setItem('practice_app_users', JSON.stringify(users));
+      return true;
+    } catch { return false; }
   };
 
   const toggleUserDisabled = (username) => {
     if (!isAdmin) return false;
-    const users = getUsers();
-    const target = users.find(u => u.username === username);
-    if (!target) return false;
-    target.disabled = !target.disabled;
-    saveUsers(users);
-    return true;
+    try {
+      const users = JSON.parse(localStorage.getItem('practice_app_users') || '[]');
+      const target = users.find(u => u.username === username);
+      if (!target) return false;
+      target.disabled = !target.disabled;
+      localStorage.setItem('practice_app_users', JSON.stringify(users));
+      return true;
+    } catch { return false; }
   };
 
   return (

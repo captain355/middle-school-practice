@@ -11,7 +11,9 @@ export default function LoginPage() {
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!username.trim() || !password.trim()) {
@@ -22,13 +24,20 @@ export default function LoginPage() {
       setError('密码至少4位');
       return;
     }
-    const result = isRegister
-      ? register(username.trim(), password, displayName.trim())
-      : login(username.trim(), password);
-    if (result.success) {
-      navigate('/');
-    } else {
-      setError(result.message);
+    setSubmitting(true);
+    try {
+      const result = isRegister
+        ? await register(username.trim(), password, displayName.trim())
+        : await login(username.trim(), password);
+      if (result.success) {
+        navigate('/');
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError(err.message || '操作失败，请检查网络连接');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -78,7 +87,7 @@ export default function LoginPage() {
             width: '100%', padding: '12px', borderRadius: 12, border: 'none',
             background: '#3B82F6', color: '#fff', fontSize: '1rem', fontWeight: 600, cursor: 'pointer',
           }}>
-            {isRegister ? '注册' : '登录'}
+            {submitting ? '请稍候...' : isRegister ? '注册' : '登录'}
           </button>
         </form>
         <div style={{ textAlign: 'center', marginTop: 16 }}>
