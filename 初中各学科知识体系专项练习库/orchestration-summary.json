@@ -1,0 +1,20 @@
+{
+  "project": {
+    "name": "初中知识体系专项练习库",
+    "deviceType": "desktop",
+    "designRead": "教育平台 / 初中生 / 清新活力 / 中密度 / 避免冷硬企业感",
+    "designDials": {
+      "layoutVariance": 3,
+      "motionIntensity": 2,
+      "visualDensity": 3
+    },
+    "styleContinuityAnchors": {
+      "colorTone": "warm-bright, primary blue #3B82F6, per-subject accent colors",
+      "cardStyle": "white bg, rounded-xl, soft shadow-md, hover:shadow-lg lift",
+      "typography": "Inter system sans, bold headings, medium body, 16-18px base",
+      "borderRadius": "xl (1rem) for cards, lg (1rem) for buttons, md (0.75rem) for inputs",
+      "spacingRhythm": "8px grid, generous padding, airy sections",
+      "iconStyle": "emoji-based for subjects, clean SVG for UI"
+    }
+  }
+}

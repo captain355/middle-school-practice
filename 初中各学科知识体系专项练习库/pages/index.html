@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>初中知识体系专项练习库</title>
+    <style id="theme-vars">
+/* ============================================
+   初中各学科知识体系专项练习库 — Brand CSS
+   清新活力风 / 教育 / 初中生 / 中密度 / 避免冷硬企业感
+   ============================================ */
+
+:root {
+  /* ---- Primary Palette ---- */
+  --color-primary:          #3B82F6;   /* 活力蓝 */
+  --color-primary-light:    #93C5FD;
+  --color-primary-lighter:  #DBEAFE;
+  --color-primary-dark:     #2563EB;
+
+  /* ---- Accent per Subject ---- */
+  --color-math:             #F59E0B;   /* 数学 - 琥珀橙 */
+  --color-chinese:          #EF4444;   /* 语文 - 暖红 */
+  --color-english:          #8B5CF6;   /* 英语 - 紫罗兰 */
+  --color-physics:          #10B981;   /* 物理 - 翠绿 */
+  --color-chemistry:        #06B6D4;   /* 化学 - 青蓝 */
+  --color-biology:          #22C55E;   /* 生物 - 草绿 */
+  --color-history:          #F97316;   /* 历史 - 橙色 */
+  --color-geography:        #0EA5E9;   /* 地理 - 天蓝 */
+  --color-politics:         #EC4899;   /* 道德与法治 - 粉红 */
+
+  /* ---- Neutral ---- */
+  --color-bg:               #F8FAFC;
+  --color-bg-warm:          #FFFBF5;
+  --color-surface:          #FFFFFF;
+  --color-surface-alt:      #F1F5F9;
+  --color-border:           #E2E8F0;
+  --color-border-light:     #F1F5F9;
+  --color-text-primary:     #1E293B;
+  --color-text-secondary:   #64748B;
+  --color-text-tertiary:    #94A3B8;
+  --color-text-inverse:     #FFFFFF;
+
+  /* ---- Status ---- */
+  --color-success:          #22C55E;
+  --color-warning:          #F59E0B;
+  --color-error:            #EF4444;
+  --color-info:             #3B82F6;
+
+  /* ---- Typography ---- */
+  --font-display:           'Inter', system-ui, -apple-system, sans-serif;
+  --font-body:              'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:              'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:    0.75rem;    /* 12px */
+  --text-sm:    0.875rem;   /* 14px */
+  --text-base:  1rem;       /* 16px */
+  --text-lg:    1.125rem;   /* 18px */
+  --text-xl:    1.25rem;    /* 20px */
+  --text-2xl:   1.5rem;     /* 24px */
+  --text-3xl:   1.875rem;   /* 30px */
+  --text-4xl:   2.25rem;    /* 36px */
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  --font-normal:   400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  --font-bold:     700;
+
+  /* ---- Spacing ---- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* ---- Radius ---- */
+  --radius-sm:   0.375rem;
+  --radius-md:   0.75rem;
+  --radius-lg:   1rem;
+  --radius-xl:   1.5rem;
+  --radius-2xl:  2rem;
+  --radius-full: 9999px;
+
+  /* ---- Shadow ---- */
+  --shadow-sm:   0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-md:   0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:   0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl:   0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+
+  /* ---- Transitions ---- */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   350ms ease;
+
+  /* ---- Semantic Aliases ---- */
+  --color-foreground:     var(--color-text-primary);
+  --color-muted:          var(--color-text-secondary);
+  --color-card:           var(--color-surface);
+  --color-background:     var(--color-bg);
+  --color-accent:         var(--color-math);
+  --color-radius-sm:      var(--radius-sm);
+  --color-radius-md:      var(--radius-md);
+  --color-radius-lg:      var(--radius-lg);
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-primary: var(--color-primary);
+    --color-muted: var(--color-muted);
+    --color-accent: var(--color-accent);
+    --color-border: var(--color-border);
+    --radius-sm: var(--color-radius-sm);
+    --radius-md: var(--color-radius-md);
+    --radius-lg: var(--color-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-accent { background-color: var(--color-accent); }
+      .text-accent { color: var(--color-accent); }
+      .border-accent { border-color: var(--color-accent); }
+      .ring-accent { --tw-ring-color: var(--color-accent); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+
+      <!-- ===== Top Navigation Bar ===== -->
+      <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b" style="border-color: var(--color-border);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+          <!-- Logo -->
+          <div class="flex items-center gap-2 shrink-0" data-dom-id="nav-logo">
+            <span class="text-xl font-bold truncate" style="color: var(--color-primary); font-family: var(--font-display);">知识练习库</span>
+          </div>
+          <!-- Nav Links -->
+          <div class="hidden sm:flex items-center gap-6">
+            <a href="#" class="text-sm font-semibold whitespace-nowrap" style="color: var(--color-primary);" data-dom-id="nav-home">首页</a>
+            <a href="#" class="text-sm whitespace-nowrap" style="color: var(--color-text-secondary);" data-dom-id="nav-catalog">学科目录</a>
+            <a href="#" class="text-sm whitespace-nowrap" style="color: var(--color-text-secondary);" data-dom-id="nav-records">练习记录</a>
+          </div>
+          <!-- Search -->
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="relative">
+              <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style="color: var(--color-text-tertiary);"></i>
+              <input
+                type="text"
+                placeholder="搜索知识点..."
+                class="pl-9 pr-4 py-2 text-sm rounded-lg border bg-white focus:outline-none focus:ring-2 w-36 sm:w-48 lg:w-56"
+                style="border-color: var(--color-border); font-family: var(--font-body); --tw-ring-color: var(--color-primary-light);"
+                data-dom-id="nav-search-input"
+              />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ===== Hero Section ===== -->
+      <section class="relative overflow-hidden" style="min-height: 380px;">
+        <!-- Background Image -->
+        <div
+          class="absolute inset-0 bg-cover bg-center"
+          style="background-image: url('../assets/hero-study-scene.jpg');"
+        ></div>
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-blue-800/50 to-transparent"></div>
+        <!-- Content -->
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center" style="min-height: 380px;">
+          <div class="py-16 sm:py-20 lg:py-24 max-w-2xl">
+            <h1
+              class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4"
+              style="text-wrap: balance; word-break: keep-all; overflow-wrap: break-word; font-family: var(--font-display);"
+            >初中各学科知识体系专项练习库</h1>
+            <p
+              class="text-base sm:text-lg text-white/85 leading-relaxed mb-8 max-w-lg"
+            >系统梳理知识脉络，精准攻克薄弱环节，助力中考全面提升</p>
+            <a
+              href="#"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-semibold text-base transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+              style="background-color: var(--color-primary); font-family: var(--font-body);"
+              data-dom-id="hero-cta"
+            >
+              开始练习
+              <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Subject Grid ===== -->
+      <section class="py-12 sm:py-16 lg:py-20" style="background-color: var(--color-bg);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <!-- Section Header -->
+          <div class="text-center mb-10 sm:mb-12">
+            <h2
+              class="text-2xl sm:text-3xl font-bold mb-3"
+              style="color: var(--color-text-primary); font-family: var(--font-display); text-wrap: balance; word-break: keep-all; overflow-wrap: break-word;"
+            >选择学科，开始练习</h2>
+            <p class="text-base" style="color: var(--color-text-secondary);">九大学科全覆盖，每个学科都像一本等待你打开的课本</p>
+          </div>
+          <!-- 3x3 Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+
+            <!-- 数学 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-math" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-math);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="数学">📐</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">数学</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">代数、几何、统计与概率全覆盖</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 语文 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-chinese" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-chinese);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="语文">📝</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">语文</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">字词句篇、古诗文、阅读与写作</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 英语 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-english" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-english);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="英语">🔤</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">英语</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">词汇语法、听力阅读、完形写作</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 物理 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-physics" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-physics);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="物理">⚡</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">物理</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">力学、电学、光学、热学专题</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 化学 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-chemistry" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-chemistry);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="化学">🧪</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">化学</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">物质结构、化学反应、实验探究</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 生物 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-biology" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-biology);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="生物">🌿</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">生物</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">细胞、遗传、生态、人体生理</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 历史 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-history" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-history);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="历史">📜</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">历史</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">中国史、世界史、史料分析</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 地理 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-geography" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-geography);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="地理">🌍</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">地理</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">自然地理、人文地理、区域地理</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+            <!-- 道德与法治 -->
+            <a href="#" class="group flex items-stretch bg-white rounded-xl overflow-hidden transition-all duration-200 hover:-translate-y-1" style="box-shadow: var(--shadow-md);" data-dom-id="card-politics" onmouseenter="this.style.boxShadow='var(--shadow-lg)'" onmouseleave="this.style.boxShadow='var(--shadow-md)'">
+              <div class="w-1.5 shrink-0" style="background-color: var(--color-politics);"></div>
+              <div class="flex items-center gap-4 p-5 flex-1 min-w-0">
+                <span class="text-4xl shrink-0" role="img" aria-label="道德与法治">⚖️</span>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold truncate" style="color: var(--color-text-primary); font-family: var(--font-display);">道德与法治</h3>
+                  <p class="text-sm truncate" style="color: var(--color-text-secondary);">国情国策、法治意识、道德修养</p>
+                </div>
+                <i data-lucide="chevron-right" class="w-5 h-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" style="color: var(--color-text-tertiary);"></i>
+              </div>
+            </a>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Stats Bar ===== -->
+      <section class="py-10 sm:py-12" style="background-color: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-center">
+            <!-- Stat 1 -->
+            <div class="flex flex-col items-center gap-2" data-dom-id="stat-subjects">
+              <i data-lucide="book-open" class="w-6 h-6" style="color: var(--color-primary);"></i>
+              <span class="text-3xl sm:text-4xl font-bold whitespace-nowrap" style="color: var(--color-text-primary); font-family: var(--font-display);">9</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">大学科</span>
+            </div>
+            <!-- Stat 2 -->
+            <div class="flex flex-col items-center gap-2" data-dom-id="stat-points">
+              <i data-lucide="lightbulb" class="w-6 h-6" style="color: var(--color-primary);"></i>
+              <span class="text-3xl sm:text-4xl font-bold whitespace-nowrap" style="color: var(--color-text-primary); font-family: var(--font-display);">500+</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">知识点</span>
+            </div>
+            <!-- Stat 3 -->
+            <div class="flex flex-col items-center gap-2" data-dom-id="stat-questions">
+              <i data-lucide="file-check" class="w-6 h-6" style="color: var(--color-primary);"></i>
+              <span class="text-3xl sm:text-4xl font-bold whitespace-nowrap" style="color: var(--color-text-primary); font-family: var(--font-display);">2000+</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">精选题</span>
+            </div>
+            <!-- Stat 4 -->
+            <div class="flex flex-col items-center gap-2" data-dom-id="stat-versions">
+              <i data-lucide="layers" class="w-6 h-6" style="color: var(--color-primary);"></i>
+              <span class="text-3xl sm:text-4xl font-bold whitespace-nowrap" style="color: var(--color-text-primary); font-family: var(--font-display);">3</span>
+              <span class="text-sm" style="color: var(--color-text-secondary);">大教材版本</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Footer ===== -->
+      <footer class="py-8" style="background-color: var(--color-surface-alt);">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-sm" style="color: var(--color-text-tertiary);">&copy; 2026 初中知识体系专项练习库</p>
+          <div class="flex items-center gap-4">
+            <a href="#" class="text-sm whitespace-nowrap" style="color: var(--color-text-tertiary);" data-dom-id="footer-about">关于我们</a>
+            <a href="#" class="text-sm whitespace-nowrap" style="color: var(--color-text-tertiary);" data-dom-id="footer-help">帮助中心</a>
+            <a href="#" class="text-sm whitespace-nowrap" style="color: var(--color-text-tertiary);" data-dom-id="footer-contact">联系反馈</a>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

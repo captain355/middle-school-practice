@@ -1,0 +1,80 @@
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+export default function LoginPage() {
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
+  const [isRegister, setIsRegister] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+    if (!username.trim() || !password.trim()) {
+      setError('请填写用户名和密码');
+      return;
+    }
+    if (password.length < 4) {
+      setError('密码至少4位');
+      return;
+    }
+    const result = isRegister
+      ? register(username.trim(), password, displayName.trim())
+      : login(username.trim(), password);
+    if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.message);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: 400, margin: '80px auto', padding: '0 24px' }}>
+      <div style={{ background: '#fff', borderRadius: 16, padding: 32, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+        <h2 style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 700, color: '#1E293B', marginBottom: 24 }}>
+          {isRegister ? '注册账号' : '欢迎登录'}
+        </h2>
+        <form onSubmit={handleSubmit}>
+          {isRegister && (
+            <div style={{ marginBottom: 16 }}>
+              <label style={labelStyle}>昵称</label>
+              <input value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="你的昵称" style={inputStyle} />
+            </div>
+          )}
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>用户名</label>
+            <input value={username} onChange={e => setUsername(e.target.value)} placeholder="输入用户名" style={inputStyle} />
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>密码</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="输入密码" style={inputStyle} />
+          </div>
+          {error && <div style={{ color: '#EF4444', fontSize: '0.875rem', marginBottom: 16 }}>{error}</div>}
+          <button type="submit" style={{
+            width: '100%', padding: '12px', borderRadius: 12, border: 'none',
+            background: '#3B82F6', color: '#fff', fontSize: '1rem', fontWeight: 600, cursor: 'pointer',
+          }}>
+            {isRegister ? '注册' : '登录'}
+          </button>
+        </form>
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <span style={{ fontSize: '0.875rem', color: '#64748B' }}>
+            {isRegister ? '已有账号？' : '没有账号？'}
+          </span>
+          <button onClick={() => { setIsRegister(!isRegister); setError(''); }} style={{
+            border: 'none', background: 'none', color: '#3B82F6', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 500,
+          }}>
+            {isRegister ? '去登录' : '去注册'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const labelStyle = { display: 'block', fontSize: '0.875rem', color: '#64748B', marginBottom: 6, fontWeight: 500 };
+const inputStyle = { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #E2E8F0', fontSize: '0.9375rem', outlineColor: '#3B82F6', boxSizing: 'border-box' };

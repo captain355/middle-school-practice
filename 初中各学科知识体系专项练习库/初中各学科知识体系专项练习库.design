@@ -1,0 +1,763 @@
+{
+  "data": [
+    {
+      "id": "page-index",
+      "title": "首页",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084800000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/index.html",
+        "interactions": [
+          {
+            "domId": "card-math",
+            "targetPageId": "page-math",
+            "transitionLabel": "进入数学"
+          },
+          {
+            "domId": "card-chinese",
+            "targetPageId": "page-chinese",
+            "transitionLabel": "进入语文"
+          },
+          {
+            "domId": "card-english",
+            "targetPageId": "page-english",
+            "transitionLabel": "进入英语"
+          },
+          {
+            "domId": "card-physics",
+            "targetPageId": "page-physics",
+            "transitionLabel": "进入物理"
+          },
+          {
+            "domId": "card-chemistry",
+            "targetPageId": "page-chemistry",
+            "transitionLabel": "进入化学"
+          },
+          {
+            "domId": "card-biology",
+            "targetPageId": "page-biology",
+            "transitionLabel": "进入生物"
+          },
+          {
+            "domId": "card-history",
+            "targetPageId": "page-history",
+            "transitionLabel": "进入历史"
+          },
+          {
+            "domId": "card-geography",
+            "targetPageId": "page-geography",
+            "transitionLabel": "进入地理"
+          },
+          {
+            "domId": "card-politics",
+            "targetPageId": "page-politics",
+            "transitionLabel": "进入道德与法治"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-math",
+      "title": "数学",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084801000,
+      "canvasData": {
+        "x": 620,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/math.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-renjiao",
+            "targetPageId": "page-math-renjiao",
+            "transitionLabel": "进入人教版"
+          },
+          {
+            "domId": "version-huadong",
+            "targetPageId": "page-math-huadong",
+            "transitionLabel": "进入华东师大版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-math-renjiao",
+      "title": "数学·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084802000,
+      "canvasData": {
+        "x": 1240,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/math-renjiao.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-math",
+            "targetPageId": "page-math",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-math",
+            "targetPageId": "page-math",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-math-huadong",
+      "title": "数学·华东师大版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084805000,
+      "canvasData": {
+        "x": 1240,
+        "y": 403,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/math-huadong.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-math",
+            "targetPageId": "page-math",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-math",
+            "targetPageId": "page-math",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-chinese",
+      "title": "语文",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084810000,
+      "canvasData": {
+        "x": 620,
+        "y": 577,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/chinese.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-renjiao",
+            "targetPageId": "page-chinese-renjiao",
+            "transitionLabel": "进入人教版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-chinese-renjiao",
+      "title": "语文·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084811000,
+      "canvasData": {
+        "x": 1240,
+        "y": 806,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/chinese-renjiao.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-chinese",
+            "targetPageId": "page-chinese",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-chinese",
+            "targetPageId": "page-chinese",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-english",
+      "title": "英语",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084812000,
+      "canvasData": {
+        "x": 620,
+        "y": 1137,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/english.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-pep",
+            "targetPageId": "page-english-pep",
+            "transitionLabel": "进入人教版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-english-pep",
+      "title": "英语·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084813000,
+      "canvasData": {
+        "x": 1240,
+        "y": 1209,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/english-pep.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-english",
+            "targetPageId": "page-english",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-english",
+            "targetPageId": "page-english",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-physics",
+      "title": "物理",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084814000,
+      "canvasData": {
+        "x": 620,
+        "y": 1697,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/physics.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-renjiao",
+            "targetPageId": "page-physics-renjiao",
+            "transitionLabel": "进入人教版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-physics-renjiao",
+      "title": "物理·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084815000,
+      "canvasData": {
+        "x": 1240,
+        "y": 1697,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/physics-renjiao.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-physics",
+            "targetPageId": "page-physics",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-physics",
+            "targetPageId": "page-physics",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-chemistry",
+      "title": "化学",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084816000,
+      "canvasData": {
+        "x": 620,
+        "y": 2300,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/chemistry.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-renjiao",
+            "targetPageId": "page-chemistry-renjiao",
+            "transitionLabel": "进入人教版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-chemistry-renjiao",
+      "title": "化学·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084817000,
+      "canvasData": {
+        "x": 1240,
+        "y": 2300,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/chemistry-renjiao.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-chemistry",
+            "targetPageId": "page-chemistry",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-chemistry",
+            "targetPageId": "page-chemistry",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-biology",
+      "title": "生物",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084818000,
+      "canvasData": {
+        "x": 620,
+        "y": 2860,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/biology.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-renjiao",
+            "targetPageId": "page-biology-renjiao",
+            "transitionLabel": "进入人教版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-biology-renjiao",
+      "title": "生物·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084819000,
+      "canvasData": {
+        "x": 1240,
+        "y": 2860,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/biology-renjiao.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-biology",
+            "targetPageId": "page-biology",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-biology",
+            "targetPageId": "page-biology",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-history",
+      "title": "历史",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084820000,
+      "canvasData": {
+        "x": 620,
+        "y": 3441,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/history.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-bubian",
+            "targetPageId": "page-history-bubian",
+            "transitionLabel": "进入人教版(部编版)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-history-bubian",
+      "title": "历史·人教版(部编版)",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084821000,
+      "canvasData": {
+        "x": 1240,
+        "y": 3441,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/history-bubian.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-history",
+            "targetPageId": "page-history",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-history",
+            "targetPageId": "page-history",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-geography",
+      "title": "地理",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084822000,
+      "canvasData": {
+        "x": 620,
+        "y": 4022,
+        "group": 2
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/geography.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-renjiao",
+            "targetPageId": "page-geography-renjiao",
+            "transitionLabel": "进入人教版"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-geography-renjiao",
+      "title": "地理·人教版",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084823000,
+      "canvasData": {
+        "x": 1240,
+        "y": 4022,
+        "group": 2
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/geography-renjiao.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-geography",
+            "targetPageId": "page-geography",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-geography",
+            "targetPageId": "page-geography",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-politics",
+      "title": "道德与法治",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084824000,
+      "canvasData": {
+        "x": 620,
+        "y": 4582,
+        "group": 2
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/politics.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "version-bubian",
+            "targetPageId": "page-politics-bubian",
+            "transitionLabel": "进入人教版(部编版)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-politics-bubian",
+      "title": "道德与法治·人教版(部编版)",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1753084825000,
+      "canvasData": {
+        "x": 1240,
+        "y": 4582,
+        "group": 2
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/politics-bubian.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-home",
+            "targetPageId": "page-index",
+            "hideEdge": true
+          },
+          {
+            "domId": "breadcrumb-politics",
+            "targetPageId": "page-politics",
+            "hideEdge": true
+          },
+          {
+            "domId": "back-to-politics",
+            "targetPageId": "page-politics",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "image-001",
+      "title": "首页学习场景插画",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1753084803000,
+      "canvasData": {
+        "x": 0,
+        "y": 5163
+      },
+      "devMetadata": {
+        "imageSrc": "assets/hero-study-scene.jpg"
+      }
+    },
+    {
+      "id": "image-002",
+      "title": "数学学科插画",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1753084804000,
+      "canvasData": {
+        "x": 620,
+        "y": 5163
+      },
+      "devMetadata": {
+        "imageSrc": "assets/subject-math-illustration.jpg"
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "初中知识体系专项练习库",
+    "visualEditorEnabled": false
+  }
+}

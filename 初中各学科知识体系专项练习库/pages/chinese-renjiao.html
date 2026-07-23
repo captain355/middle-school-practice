@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语文·人教版 - 初中知识体系专项练习库</title>
+    <style id="theme-vars">
+/* ============================================
+   初中各学科知识体系专项练习库 — Brand CSS
+   清新活力风 / 教育 / 初中生 / 中密度 / 避免冷硬企业感
+   ============================================ */
+
+:root {
+  /* ---- Primary Palette ---- */
+  --color-primary:          #3B82F6;   /* 活力蓝 */
+  --color-primary-light:    #93C5FD;
+  --color-primary-lighter:  #DBEAFE;
+  --color-primary-dark:     #2563EB;
+
+  /* ---- Accent per Subject ---- */
+  --color-math:             #F59E0B;   /* 数学 - 琥珀橙 */
+  --color-chinese:          #EF4444;   /* 语文 - 暖红 */
+  --color-english:          #8B5CF6;   /* 英语 - 紫罗兰 */
+  --color-physics:          #10B981;   /* 物理 - 翠绿 */
+  --color-chemistry:        #06B6D4;   /* 化学 - 青蓝 */
+  --color-biology:          #22C55E;   /* 生物 - 草绿 */
+  --color-history:          #F97316;   /* 历史 - 橙色 */
+  --color-geography:        #0EA5E9;   /* 地理 - 天蓝 */
+  --color-politics:         #EC4899;   /* 道德与法治 - 粉红 */
+
+  /* ---- Neutral ---- */
+  --color-bg:               #F8FAFC;
+  --color-bg-warm:          #FFFBF5;
+  --color-surface:          #FFFFFF;
+  --color-surface-alt:      #F1F5F9;
+  --color-border:           #E2E8F0;
+  --color-border-light:    #F1F5F9;
+  --color-text-primary:     #1E293B;
+  --color-text-secondary:   #64748B;
+  --color-text-tertiary:    #94A3B8;
+  --color-text-inverse:     #FFFFFF;
+
+  /* ---- Status ---- */
+  --color-success:          #22C55E;
+  --color-warning:          #F59E0B;
+  --color-error:            #EF4444;
+  --color-info:             #3B82F6;
+
+  /* ---- Typography ---- */
+  --font-display:           'Inter', system-ui, -apple-system, sans-serif;
+  --font-body:              'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:              'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:    0.75rem;    /* 12px */
+  --text-sm:    0.875rem;   /* 14px */
+  --text-base:  1rem;       /* 16px */
+  --text-lg:    1.125rem;   /* 18px */
+  --text-xl:    1.25rem;    /* 20px */
+  --text-2xl:   1.5rem;     /* 24px */
+  --text-3xl:   1.875rem;   /* 30px */
+  --text-4xl:   2.25rem;    /* 36px */
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  --font-normal:   400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  --font-bold:     700;
+
+  /* ---- Spacing ---- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* ---- Radius ---- */
+  --radius-sm:   0.375rem;
+  --radius-md:   0.75rem;
+  --radius-lg:   1rem;
+  --radius-xl:   1.5rem;
+  --radius-2xl:  2rem;
+  --radius-full: 9999px;
+
+  /* ---- Shadow ---- */
+  --shadow-sm:   0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-md:   0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg:   0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --shadow-xl:   0 20px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+
+  /* ---- Transitions ---- */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   350ms ease;
+
+  /* ---- Semantic Aliases ---- */
+  --color-foreground:     var(--color-text-primary);
+  --color-muted:          var(--color-text-secondary);
+  --color-card:           var(--color-surface);
+  --color-background:     var(--color-bg);
+  --color-accent:         var(--color-math);
+  --color-radius-sm:      var(--radius-sm);
+  --color-radius-md:      var(--radius-md);
+  --color-radius-lg:      var(--radius-lg);
+  --color-border-border:  var(--color-border);
+}
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-card: var(--color-card);
+    --color-primary: var(--color-primary);
+    --color-muted: var(--color-muted);
+    --color-accent: var(--color-accent);
+    --color-border: var(--color-border);
+    --radius-sm: var(--color-radius-sm);
+    --radius-md: var(--color-radius-md);
+    --radius-lg: var(--color-radius-lg);
+  }
+  @layer base {
+    body { background: var(--color-background); color: var(--color-foreground); }
+    td, th { @apply break-words; word-break: break-all; word-break: auto-phrase; }
+    th { @apply whitespace-nowrap; }
+  }
+    </style>
+    <style id="semantic-token-fallback">
+      .bg-background { background-color: var(--color-background); }
+      .text-background { color: var(--color-background); }
+      .border-background { border-color: var(--color-background); }
+      .ring-background { --tw-ring-color: var(--color-background); }
+      .bg-foreground { background-color: var(--color-foreground); }
+      .text-foreground { color: var(--color-foreground); }
+      .border-foreground { border-color: var(--color-foreground); }
+      .ring-foreground { --tw-ring-color: var(--color-foreground); }
+      .bg-card { background-color: var(--color-card); }
+      .text-card { color: var(--color-card); }
+      .border-card { border-color: var(--color-card); }
+      .ring-card { --tw-ring-color: var(--color-card); }
+      .bg-primary { background-color: var(--color-primary); }
+      .text-primary { color: var(--color-primary); }
+      .border-primary { border-color: var(--color-primary); }
+      .ring-primary { --tw-ring-color: var(--color-primary); }
+      .bg-muted { background-color: var(--color-muted); }
+      .text-muted { color: var(--color-muted); }
+      .border-muted { border-color: var(--color-muted); }
+      .ring-muted { --tw-ring-color: var(--color-muted); }
+      .bg-accent { background-color: var(--color-accent); }
+      .text-accent { color: var(--color-accent); }
+      .border-accent { border-color: var(--color-accent); }
+      .ring-accent { --tw-ring-color: var(--color-accent); }
+      .bg-border { background-color: var(--color-border); }
+      .text-border { color: var(--color-border); }
+      .border-border { border-color: var(--color-border); }
+      .ring-border { --tw-ring-color: var(--color-border); }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      [data-icon] {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main>
+
+      <!-- ========== 1. Top Navigation Bar ========== -->
+      <nav class="sticky top-0 z-50 border-b bg-card/90 backdrop-blur-md" style="border-color: var(--color-border);">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 items-center justify-between gap-4">
+            <a href="../index.html" class="flex items-center gap-2 shrink-0" data-dom-id="nav-logo">
+              <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg" style="background-color: var(--color-primary);">
+                <i data-lucide="book-open" class="h-4 w-4" style="color: var(--color-text-inverse);"></i>
+              </span>
+              <span class="text-lg font-bold" style="color: var(--color-text-primary);">知识练习库</span>
+            </a>
+            <div class="hidden md:flex items-center gap-1">
+              <a href="../index.html" class="px-3 py-2 text-sm font-medium rounded-lg transition-colors" style="color: var(--color-text-secondary);" data-dom-id="nav-home">首页</a>
+              <a href="#" class="px-3 py-2 text-sm font-medium rounded-lg transition-colors" style="color: var(--color-text-secondary);" data-dom-id="nav-subjects">学科目录</a>
+              <a href="#" class="px-3 py-2 text-sm font-medium rounded-lg transition-colors" style="color: var(--color-text-secondary);" data-dom-id="nav-records">练习记录</a>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style="color: var(--color-text-tertiary);"></i>
+                <input type="text" placeholder="搜索知识点..." class="pl-9 pr-4 py-2 text-sm rounded-lg border bg-card w-40 sm:w-56 focus:outline-none focus:ring-2" style="border-color: var(--color-border); --tw-ring-color: var(--color-primary-light);" data-dom-id="nav-search">
+              </div>
+              <button class="md:hidden p-2 rounded-lg" style="color: var(--color-text-secondary);" data-dom-id="nav-mobile-toggle">
+                <i data-lucide="menu" class="h-5 w-5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ========== 2. Breadcrumb ========== -->
+      <div class="border-b" style="border-color: var(--color-border-light); background-color: var(--color-surface);">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+          <nav class="flex items-center gap-2 text-sm" style="color: var(--color-text-tertiary);">
+            <a href="../index.html" class="hover:underline transition-colors" style="color: var(--color-text-secondary);" data-dom-id="breadcrumb-home">首页</a>
+            <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
+            <a href="chinese.html" class="hover:underline transition-colors" style="color: var(--color-text-secondary);" data-dom-id="breadcrumb-chinese">语文</a>
+            <i data-lucide="chevron-right" class="h-3.5 w-3.5 shrink-0"></i>
+            <span class="font-medium" style="color: var(--color-text-primary);">人教版</span>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ========== 3. Page Header ========== -->
+      <section style="background: linear-gradient(135deg, var(--color-bg-warm) 0%, var(--color-bg) 100%);">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+              <button class="shrink-0 p-2 rounded-lg border transition-colors hover:shadow-sm" style="border-color: var(--color-border); background-color: var(--color-surface);" data-dom-id="back-to-chinese">
+                <i data-lucide="arrow-left" class="h-5 w-5" style="color: var(--color-text-secondary);"></i>
+              </button>
+              <div class="min-w-0">
+                <h1 class="text-2xl lg:text-3xl font-bold truncate" style="color: var(--color-text-primary); text-wrap: balance; word-break: keep-all; overflow-wrap: break-word;">语文 · 人教版</h1>
+                <p class="text-sm mt-0.5 truncate" style="color: var(--color-text-tertiary);">人民教育出版社</p>
+              </div>
+            </div>
+            <div class="shrink-0 flex items-center gap-3 rounded-xl border px-4 py-2.5" style="border-color: var(--color-border); background-color: var(--color-surface); box-shadow: var(--shadow-sm);">
+              <div class="text-right min-w-0">
+                <p class="text-sm font-medium whitespace-nowrap" style="color: var(--color-text-primary);">已完成 15/92 知识点</p>
+                <div class="mt-1.5 h-2 w-40 rounded-full overflow-hidden" style="background-color: var(--color-border-light);">
+                  <div class="h-full rounded-full" style="width: 16%; background: linear-gradient(90deg, #EF4444, var(--color-primary));"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 4. Grade Tab Navigation ========== -->
+      <section style="background-color: var(--color-surface); border-bottom: 1px solid var(--color-border);">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center gap-0 overflow-x-auto no-scrollbar">
+            <button class="relative px-6 py-4 text-sm font-semibold whitespace-nowrap transition-colors" style="color: #EF4444;" data-dom-id="tab-grade-7">
+              <span>七年级</span>
+              <span class="absolute bottom-0 left-3 right-3 h-0.5 rounded-full" style="background-color: #EF4444;"></span>
+            </button>
+            <button class="relative px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors hover:opacity-80" style="color: var(--color-text-tertiary);" data-dom-id="tab-grade-8">
+              <span>八年级</span>
+            </button>
+            <button class="relative px-6 py-4 text-sm font-medium whitespace-nowrap transition-colors hover:opacity-80" style="color: var(--color-text-tertiary);" data-dom-id="tab-grade-9">
+              <span>九年级</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 5. Main Content + Sidebar ========== -->
+      <section style="background-color: var(--color-bg);">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <div class="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
+
+            <!-- Left: Chapter List -->
+            <div class="min-w-0">
+              <div class="flex items-center gap-3 mb-6">
+                <div class="h-8 w-1 rounded-full" style="background-color: #EF4444;"></div>
+                <h2 class="text-xl font-bold truncate" style="color: var(--color-text-primary);">七年级上册</h2>
+              </div>
+
+              <div class="flex flex-col gap-4">
+
+                <!-- Chapter 1: 春 (已完成) -->
+                <div class="rounded-xl border overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background-color: var(--color-surface); border-color: var(--color-border); box-shadow: var(--shadow-md); border-left: 4px solid var(--color-success);" data-dom-id="cn-ch-1">
+                  <div class="flex items-center gap-4 p-5">
+                    <div class="shrink-0 h-12 w-12 rounded-full flex items-center justify-center" style="background-color: #DCFCE7;">
+                      <span class="text-sm font-bold" style="color: var(--color-success);">01</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium" style="background-color: #FEE2E2; color: #B9919A;">第一章</span>
+                        <h3 class="text-base font-bold truncate" style="color: var(--color-text-primary);">春</h3>
+                      </div>
+                      <p class="text-sm" style="color: var(--color-text-tertiary);">5个知识点 · 18道练习题</p>
+                      <div class="mt-2 h-1.5 w-full max-w-48 rounded-full overflow-hidden" style="background-color: var(--color-border-light);">
+                        <div class="h-full rounded-full" style="width: 100%; background-color: var(--color-success);"></div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                      <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg" style="background-color: #DCFCE7; color: #15803D;">
+                        <i data-lucide="check-circle-2" class="h-3.5 w-3.5"></i>
+                        <span>已完成</span>
+                      </span>
+                      <i data-lucide="chevron-right" class="h-4 w-4" style="color: var(--color-text-tertiary);"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Chapter 2: 济南的冬天 (进行中) -->
+                <div class="rounded-xl border overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background-color: var(--color-surface); border-color: var(--color-border); box-shadow: var(--shadow-md); border-left: 4px solid #EF4444;" data-dom-id="cn-ch-2">
+                  <div class="flex items-center gap-4 p-5">
+                    <div class="shrink-0 h-12 w-12 rounded-full flex items-center justify-center" style="background-color: #FEE2E2;">
+                      <span class="text-sm font-bold" style="color: #EF4444;">02</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium" style="background-color: #FEE2E2; color: #B9919A;">第二章</span>
+                        <h3 class="text-base font-bold truncate" style="color: var(--color-text-primary);">济南的冬天</h3>
+                      </div>
+                      <p class="text-sm" style="color: var(--color-text-tertiary);">4个知识点 · 16道练习题</p>
+                      <div class="mt-2 h-1.5 w-full max-w-48 rounded-full overflow-hidden" style="background-color: var(--color-border-light);">
+                        <div class="h-full rounded-full" style="width: 50%; background-color: #EF4444;"></div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                      <span class="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg" style="background-color: #FEE2E2; color: #EF4444;">
+                        <i data-lucide="loader" class="h-3.5 w-3.5"></i>
+                        <span>进行中</span>
+                      </span>
+                      <i data-lucide="chevron-right" class="h-4 w-4" style="color: var(--color-text-tertiary);"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Chapter 3: 古代诗歌四首 (未开始) -->
+                <div class="rounded-xl border overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background-color: var(--color-surface); border-color: var(--color-border); box-shadow: var(--shadow-md); border-left: 4px solid var(--color-border);" data-dom-id="cn-ch-3">
+                  <div class="flex items-center gap-4 p-5">
+                    <div class="shrink-0 h-12 w-12 rounded-full flex items-center justify-center" style="background-color: var(--color-surface-alt);">
+                      <span class="text-sm font-bold" style="color: var(--color-text-tertiary);">03</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium" style="background-color: #FEE2E2; color: #B9919A;">第三章</span>
+                        <h3 class="text-base font-bold truncate" style="color: var(--color-text-primary);">古代诗歌四首</h3>
+                      </div>
+                      <p class="text-sm" style="color: var(--color-text-tertiary);">6个知识点 · 22道练习题</p>
+                      <div class="mt-2 h-1.5 w-full max-w-48 rounded-full overflow-hidden" style="background-color: var(--color-border-light);">
+                        <div class="h-full rounded-full" style="width: 0%; background-color: var(--color-border);"></div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                      <button class="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors" style="background-color: #EF4444; color: var(--color-text-inverse);" data-dom-id="cn-ch-3-start">
+                        <i data-lucide="play" class="h-3.5 w-3.5"></i>
+                        <span>开始练习</span>
+                      </button>
+                      <i data-lucide="chevron-right" class="h-4 w-4" style="color: var(--color-text-tertiary);"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Chapter 4: 从百草园到三味书屋 (未开始) -->
+                <div class="rounded-xl border overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background-color: var(--color-surface); border-color: var(--color-border); box-shadow: var(--shadow-md); border-left: 4px solid var(--color-border);" data-dom-id="cn-ch-4">
+                  <div class="flex items-center gap-4 p-5">
+                    <div class="shrink-0 h-12 w-12 rounded-full flex items-center justify-center" style="background-color: var(--color-surface-alt);">
+                      <span class="text-sm font-bold" style="color: var(--color-text-tertiary);">04</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium" style="background-color: #FEE2E2; color: #B9919A;">第四章</span>
+                        <h3 class="text-base font-bold truncate" style="color: var(--color-text-primary);">从百草园到三味书屋</h3>
+                      </div>
+                      <p class="text-sm" style="color: var(--color-text-tertiary);">5个知识点 · 20道练习题</p>
+                      <div class="mt-2 h-1.5 w-full max-w-48 rounded-full overflow-hidden" style="background-color: var(--color-border-light);">
+                        <div class="h-full rounded-full" style="width: 0%; background-color: var(--color-border);"></div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                      <button class="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors" style="background-color: #EF4444; color: var(--color-text-inverse);" data-dom-id="cn-ch-4-start">
+                        <i data-lucide="play" class="h-3.5 w-3.5"></i>
+                        <span>开始练习</span>
+                      </button>
+                      <i data-lucide="chevron-right" class="h-4 w-4" style="color: var(--color-text-tertiary);"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Right: Quick Stats Sidebar -->
+            <aside class="shrink-0 lg:sticky lg:top-24 lg:self-start">
+              <div class="rounded-xl border overflow-hidden" style="background-color: var(--color-surface); border-color: var(--color-border); box-shadow: var(--shadow-md);">
+                <div class="px-5 py-4 border-b" style="border-color: var(--color-border-light);">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="bar-chart-3" class="h-5 w-5" style="color: #EF4444;"></i>
+                    <h3 class="text-base font-bold truncate" style="color: var(--color-text-primary);">学习统计</h3>
+                  </div>
+                </div>
+                <div class="p-5 flex flex-col gap-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="shrink-0 h-9 w-9 rounded-lg flex items-center justify-center" style="background-color: var(--color-primary-lighter);">
+                        <i data-lucide="pencil-line" class="h-4 w-4" style="color: var(--color-primary);"></i>
+                      </div>
+                      <span class="text-sm truncate" style="color: var(--color-text-secondary);">本周练习</span>
+                    </div>
+                    <span class="text-sm font-bold whitespace-nowrap" style="color: var(--color-text-primary);">10题</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="shrink-0 h-9 w-9 rounded-lg flex items-center justify-center" style="background-color: #DCFCE7;">
+                        <i data-lucide="target" class="h-4 w-4" style="color: var(--color-success);"></i>
+                      </div>
+                      <span class="text-sm truncate" style="color: var(--color-text-secondary);">正确率</span>
+                    </div>
+                    <span class="text-sm font-bold whitespace-nowrap" style="color: var(--color-success);">85%</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="shrink-0 h-9 w-9 rounded-lg flex items-center justify-center" style="background-color: #FEE2E2;">
+                        <i data-lucide="flame" class="h-4 w-4" style="color: #EF4444;"></i>
+                      </div>
+                      <span class="text-sm truncate" style="color: var(--color-text-secondary);">连续打卡</span>
+                    </div>
+                    <span class="text-sm font-bold whitespace-nowrap" style="color: var(--color-text-primary);">4天</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="shrink-0 h-9 w-9 rounded-lg flex items-center justify-center" style="background-color: #FEE2E2;">
+                        <i data-lucide="alert-triangle" class="h-4 w-4" style="color: var(--color-error);"></i>
+                      </div>
+                      <span class="text-sm truncate" style="color: var(--color-text-secondary);">薄弱知识点</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <span class="text-sm font-bold whitespace-nowrap" style="color: var(--color-error);" data-dom-id="cn-stats-weak">2个</span>
+                      <a href="#" class="text-xs font-medium whitespace-nowrap transition-colors hover:opacity-80" style="color: var(--color-primary);" data-dom-id="stats-view-weak">查看详情</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="mx-5 border-t" style="border-color: var(--color-border-light);"></div>
+                <div class="p-5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs" style="background-color: #EF4444; color: var(--color-text-inverse);">一</span>
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs" style="background-color: #EF4444; color: var(--color-text-inverse);">二</span>
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs" style="background-color: #EF4444; color: var(--color-text-inverse);">三</span>
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs" style="background-color: #EF4444; color: var(--color-text-inverse);">四</span>
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs border" style="background-color: var(--color-surface); border-color: var(--color-border); color: var(--color-text-tertiary);">五</span>
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs border" style="background-color: var(--color-surface); border-color: var(--color-border); color: var(--color-text-tertiary);">六</span>
+                    <span class="h-6 w-6 rounded-full flex items-center justify-center text-xs border" style="background-color: var(--color-surface); border-color: var(--color-border); color: var(--color-text-tertiary);">日</span>
+                  </div>
+                  <p class="text-xs mt-2 truncate" style="color: var(--color-text-tertiary);">本周已连续学习 4 天，继续保持!</p>
+                </div>
+              </div>
+            </aside>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 7. Footer ========== -->
+      <footer class="border-t" style="border-color: var(--color-border); background-color: var(--color-surface);">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-md" style="background-color: var(--color-primary);">
+                <i data-lucide="book-open" class="h-3.5 w-3.5" style="color: var(--color-text-inverse);"></i>
+              </span>
+              <span class="text-sm font-semibold" style="color: var(--color-text-primary);">知识练习库</span>
+            </div>
+            <nav class="flex items-center gap-6 text-sm" style="color: var(--color-text-tertiary);">
+              <a href="#" class="hover:underline transition-colors whitespace-nowrap" style="color: var(--color-text-secondary);">关于我们</a>
+              <a href="#" class="hover:underline transition-colors whitespace-nowrap" style="color: var(--color-text-secondary);">使用帮助</a>
+              <a href="#" class="hover:underline transition-colors whitespace-nowrap" style="color: var(--color-text-secondary);">意见反馈</a>
+              <a href="#" class="hover:underline transition-colors whitespace-nowrap" style="color: var(--color-text-secondary);">隐私政策</a>
+            </nav>
+            <p class="text-xs whitespace-nowrap" style="color: var(--color-text-tertiary);">2026 初中知识体系专项练习库</p>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
