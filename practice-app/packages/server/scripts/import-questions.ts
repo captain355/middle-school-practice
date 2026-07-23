@@ -3,7 +3,12 @@
 
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+
+// ESM 中获取 __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 加载环境变量（从项目根目录）
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -42,16 +47,15 @@ function loadSampleQuestions(): Record<string, SampleChapterData> {
 
   const content = fs.readFileSync(filePath, 'utf-8');
 
-  // 从 JS 文件中提取 export const sampleQuestions = {...} 的数据
-  // 匹配整个对象字面量
-  const match = content.match(/export\s+const\s+sampleQuestions\s*=\s*(\{[\s\S]*\})\s*;?\s*$/m);
-  if (!match) {
-    throw new Error('无法解析 sampleQuestions.js：未找到 export const sampleQuestions 定义');
-  }
+  // 去掉所有 export 关键字，然后替换变量名为 __data__
+  const cleaned = content
+    .replace(/^export\s+/gm, '')
+    .replace(/^const\s+sampleQuestions\s*=/m, 'const __data__ =');
+  // 追加导出语句
+  const code = cleaned + '\nreturn __data__;';
 
-  // 使用 Function 构造器安全地解析对象
   try {
-    const fn = new Function('return ' + match[1]);
+    const fn = new Function(code);
     return fn() as Record<string, SampleChapterData>;
   } catch (e) {
     throw new Error(`解析 sampleQuestions 数据失败: ${e}`);
@@ -101,6 +105,12 @@ async function main() {
   let totalSkipped = 0;
   let chapterProcessed = 0;
 
+  // 预加载所有已存在的题目 key（用于全局去重）
+  const allExistingKeys = new Set(
+    (await prisma.question.findMany({ select: { questionKey: true } }))
+      .map(q => q.questionKey)
+  );
+
   // 用于批量插入的缓冲区
   const BATCH_SIZE = 100;
 
@@ -142,25 +152,10 @@ async function main() {
       continue;
     }
 
-    // 获取已存在的题目键，用于去重
-    const existingKeys = new Set(
-      (await prisma.question.findMany({
-        where: { chapterId: chapter.id },
-        select: { questionKey: true },
-      })).map(q => q.questionKey)
-    );
-
-    // 准备待插入的题目数据
-    const toInsert: any[] = [];
-
-    for (const q of data.questions) {
-      // 跳过已存在的题目
-      if (existingKeys.has(q.id)) {
-        totalSkipped++;
-        continue;
-      }
-
-      toInsert.push({
+    // 过滤已存在的题目（全局 question_key 唯一检查）
+    const toInsert = data.questions
+      .filter(q => !allExistingKeys.has(q.id))
+      .map(q => ({
         chapterId: chapter.id,
         questionKey: q.id,
         type: q.type,
@@ -171,17 +166,18 @@ async function main() {
         options: q.options ? JSON.stringify(q.options) : null,
         pairs: q.pairs ? JSON.stringify(q.pairs) : null,
         acceptableAnswers: q.acceptableAnswers ? JSON.stringify(q.acceptableAnswers) : null,
-      });
-    }
+      }));
+    totalSkipped += data.questions.length - toInsert.length;
 
     // 分批插入
     for (let i = 0; i < toInsert.length; i += BATCH_SIZE) {
       const batch = toInsert.slice(i, i + BATCH_SIZE);
       const result = await prisma.question.createMany({
         data: batch,
-        skipDuplicates: true,
       });
       totalImported += result.count;
+      // 将新插入的 key 加入缓存，防止后续章节重复
+      batch.forEach(q => allExistingKeys.add(q.questionKey));
     }
 
     const questionCount = data.questions.length;
