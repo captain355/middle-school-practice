@@ -2,6 +2,7 @@
 # ============================================
 # 初中各学科知识体系专项练习库 - 一键部署脚本
 # 适用于 Ubuntu/Debian/CentOS/Alibaba Cloud Linux 等
+# 前端构建产物已包含在仓库中，无需在服务器上构建
 # ============================================
 
 set -e
@@ -13,13 +14,13 @@ echo "=========================================="
 # 检测系统
 if [ -f /etc/os-release ]; then
   . /etc/os-release
-  echo "[1/8] 操作系统: $PRETTY_NAME"
+  echo "[1/6] 操作系统: $PRETTY_NAME"
 else
-  echo "[1/8] 操作系统: 未知"
+  echo "[1/6] 操作系统: 未知"
 fi
 
 # 检测包管理器
-echo "[2/8] 检测包管理器..."
+echo "[2/6] 检测包管理器..."
 if command -v dnf &>/dev/null; then
   PKG="dnf"
   echo "  使用 dnf"
@@ -34,16 +35,8 @@ else
   exit 1
 fi
 
-# 安装构建工具（Vite 的 native binding 需要）
-echo "[3/8] 安装系统依赖..."
-if [ "$PKG" = "dnf" ] || [ "$PKG" = "yum" ]; then
-  $PKG install -y git curl python3 make gcc-c++ 2>/dev/null || true
-else
-  apt-get update -qq && apt-get install -y git curl python3 make g++ 2>/dev/null || true
-fi
-
 # 安装 Node.js 20
-echo "[4/8] 安装 Node.js 20..."
+echo "[3/6] 安装 Node.js 20..."
 NODE_EXISTS=false
 if command -v node &>/dev/null; then
   NODE_VER=$(node -v 2>/dev/null || echo "")
@@ -65,12 +58,12 @@ fi
 echo "  Node.js $(node -v) 安装完成"
 
 # 安装 PM2（进程管理器，保持服务运行）
-echo "[5/8] 安装 PM2..."
+echo "[4/6] 安装 PM2..."
 npm install -g pm2 2>&1 | tail -1
 echo "  PM2 安装完成"
 
 # 克隆项目
-echo "[6/8] 克隆项目..."
+echo "[5/6] 克隆项目..."
 APP_DIR="/opt/middle-school-practice"
 if [ -d "$APP_DIR" ]; then
   echo "  目录已存在，更新代码..."
@@ -80,27 +73,14 @@ else
 fi
 cd "$APP_DIR/practice-app"
 
-# 清理旧的依赖（避免 lockfile 损坏和 native binding 不匹配）
-echo "[7/8] 安装依赖（清理旧缓存）..."
-rm -rf node_modules package-lock.json
-rm -rf packages/client/node_modules packages/client/package-lock.json
-rm -rf packages/server/node_modules packages/server/package-lock.json
-npm cache clean --force 2>/dev/null || true
-npm install
-
-# 构建前端（API 地址使用相对路径）
-echo "[7/8] 构建前端..."
-cd packages/client
-rm -rf node_modules package-lock.json
-npm install
-VITE_API_URL=/api/v1 npx vite build
-cd ../..
-
-# 运行数据库迁移和种子
-echo "[7/8] 初始化数据库..."
+# 安装后端依赖（前端已预构建，无需安装前端依赖）
+echo "[5/6] 安装后端依赖..."
 cd packages/server
 rm -rf node_modules package-lock.json
 npm install
+
+# 初始化数据库
+echo "[5/6] 初始化数据库..."
 npx prisma generate
 npx prisma migrate deploy
 npx tsx prisma/seed.ts
@@ -123,8 +103,16 @@ EOF
 # 创建数据目录
 mkdir -p data
 
+# 检查前端构建产物是否存在
+if [ ! -d "packages/client/dist" ]; then
+  echo "  错误: packages/client/dist 不存在！前端构建产物缺失。"
+  echo "  请在本地执行: cd packages/client && npx vite build"
+  exit 1
+fi
+echo "  前端构建产物已就绪"
+
 # 开放防火墙端口
-echo "[8/8] 配置防火墙..."
+echo "[6/6] 配置防火墙..."
 if command -v firewall-cmd &>/dev/null; then
   firewall-cmd --permanent --add-port=3000/tcp 2>/dev/null || true
   firewall-cmd --reload 2>/dev/null || true

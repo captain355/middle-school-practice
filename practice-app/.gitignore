@@ -1,8 +1,8 @@
 # Dependencies
 node_modules/
 
-# Build output
-dist/
+# Build output (server dist only; client/dist is committed for deployment)
+packages/server/dist/
 
 # Design project files
 .design/
