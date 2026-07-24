@@ -3569,4 +3569,4 @@ export async function seedMathRenjiaoQuestions(): Promise<number> {
 
   console.log(`[seed-math-renjiao] 共插入 ${inserted} 道数学人教版题目`);
   return inserted;
-},
+}
