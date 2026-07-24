@@ -76,7 +76,17 @@ cd "$APP_DIR/practice-app"
 # 创建生产环境配置（必须在数据库操作之前）
 echo "[5/6] 配置环境..."
 mkdir -p data
-JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# 导出到当前 shell 环境变量（确保子进程都能读取）
+export DATABASE_URL="file:$APP_DIR/practice-app/data/practice.db"
+export JWT_SECRET="$JWT_SECRET"
+export JWT_ACCESS_EXPIRES_IN="15m"
+export JWT_REFRESH_EXPIRES_IN="7d"
+export SERVER_PORT="3000"
+export NODE_ENV="production"
+
+# 同时写入 .env 文件供后续 PM2 启动使用
 cat > .env << EOF
 DATABASE_URL=file:./data/practice.db
 JWT_SECRET=${JWT_SECRET}
@@ -85,6 +95,11 @@ JWT_REFRESH_EXPIRES_IN=7d
 SERVER_PORT=3000
 NODE_ENV=production
 VITE_API_URL=/api/v1
+EOF
+
+# server 目录也需要 .env（Prisma 从当前目录读取）
+cat > packages/server/.env << EOF
+DATABASE_URL=file:$APP_DIR/practice-app/data/practice.db
 EOF
 echo "  环境配置已创建"
 
