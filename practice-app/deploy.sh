@@ -73,6 +73,21 @@ else
 fi
 cd "$APP_DIR/practice-app"
 
+# 创建生产环境配置（必须在数据库操作之前）
+echo "[5/6] 配置环境..."
+mkdir -p data
+JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+cat > .env << EOF
+DATABASE_URL=file:./data/practice.db
+JWT_SECRET=${JWT_SECRET}
+JWT_ACCESS_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+SERVER_PORT=3000
+NODE_ENV=production
+VITE_API_URL=/api/v1
+EOF
+echo "  环境配置已创建"
+
 # 安装后端依赖（前端已预构建，无需安装前端依赖）
 echo "[5/6] 安装后端依赖..."
 cd packages/server
@@ -85,23 +100,6 @@ npx prisma generate
 npx prisma migrate deploy
 npx tsx prisma/seed.ts
 cd ../..
-
-# 生成 JWT 密钥
-JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
-
-# 创建生产环境配置
-cat > .env << EOF
-DATABASE_URL=file:./data/practice.db
-JWT_SECRET=${JWT_SECRET}
-JWT_ACCESS_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
-SERVER_PORT=3000
-NODE_ENV=production
-VITE_API_URL=/api/v1
-EOF
-
-# 创建数据目录
-mkdir -p data
 
 # 检查前端构建产物是否存在
 if [ ! -d "packages/client/dist" ]; then
