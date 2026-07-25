@@ -35,7 +35,7 @@ const chapter7_0: RawQuestion[] = [
   {
     questionKey: 'english-pep-7-0-0',
     type: 'choice',
-    questionText: '—What's your name? —My name ___ Gina.',
+    questionText: '—What\'s your name? —My name ___ Gina.',
     answer: 'C',
     explanation: "主语 My name 是第三人称单数，be动词用 is，缩写为 's。",
     difficulty: 1,
@@ -53,7 +53,7 @@ const chapter7_0: RawQuestion[] = [
   {
     questionKey: 'english-pep-7-0-2',
     type: 'choice',
-    questionText: '—What's ___ name? —His name is Jack.',
+    questionText: '—What\'s ___ name? —His name is Jack.',
     answer: 'D',
     explanation: "根据回答 His name 可知问的是"他的"名字，应用 his。",
     difficulty: 1,
