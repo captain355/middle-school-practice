@@ -1,0 +1,7 @@
+﻿git : fatal: Invalid path '/tmp': No such file or directory
+At line:15 char:7312
++ ... p.ts 2>&1 ; git diff /tmp/original-ep.ts packages/server/prisma/seed- ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (fatal: Invalid ...le or directory:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
