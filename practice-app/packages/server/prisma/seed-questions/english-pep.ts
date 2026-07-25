@@ -3,10 +3,9 @@
  *
  * 涵盖 7~9 年级共 12 个章节，总计 281 道题。
  * 章节对应 seed-data.ts 中 english-pep 的定义：
- *   7年级：My name's Gina(20)、This is my sister(22)、Is there a post office near here?(25)、I'm watching TV(24)
- *   8年级：Where did you go on vacation?(22)、How often do you exercise?(20)、I'm more outgoing than my sister(26)、What's the best movie theater?(22)
- *   9年级：How can we become good learners?(24)、I think that mooncakes are delicious!(26)、Could you please tell me where the restrooms are?(28)、We're trying to save the earth!(22)
- *
+ *   7年级：My name's Gina(20)、This is my sister(22)、Is there a post office near here?(25)、I\'m watching TV(24)
+ *   8年级：Where did you go on vacation?(22)、How often do you exercise?(20)、I\'m more outgoing than my sister(26)、What\'s the best movie theater?(22)
+ *   9年级：How can we become good learners?(24)、I think that mooncakes are delicious!(26)、Could you please tell me where the restrooms are?(28)、We're trying to save the earth!(22) *
  * 题型分布：choice ~40% | fill ~30% | short_answer ~20% | matching ~10%
  * 难度分布：difficulty 1(基础) ~40% | 2(中等) ~40% | 3(提高) ~20%
  */
@@ -27,8 +26,7 @@ interface RawQuestion {
   acceptableAnswers?: string;
 }
 
-// ========== 7-0 My name's Gina (20题) =========
-// 知识点：问候与自我介绍、be动词、物主代词、what/who引导的特殊疑问句
+// ========== 7-0 My name's Gina (20题) ========= // 知识点：问候与自我介绍、be动词、物主代词、what/who引导的特殊疑问句
 
 const chapter7_0: RawQuestion[] = [
   // ---- choice 8题 ----
@@ -171,8 +169,7 @@ const chapter7_0: RawQuestion[] = [
   {
     questionKey: 'english-pep-7-0-15',
     type: 'short_answer',
-    questionText: '请写出英语中介绍自己的完整句子（包含名字）。
-提示：我的名字叫李明。',
+    questionText: '请写出英语中介绍自己的完整句子（包含名字）。 提示：我的名字叫李明。',
     answer: 'My name is Li Ming. / I am Li Ming. / I\'m Li Ming.',
     explanation: '介绍自己可以用 My name is... 或 I\'m... 两种句型。',
     difficulty: 2,
@@ -216,8 +213,7 @@ const chapter7_0: RawQuestion[] = [
 ];
 
 // ========== 7-1 This is my sister (22题) =========
-// 知识点：家庭成员、指示代词this/that/these/those、名词复数、所有格's
-
+// 知识点：家庭成员、指示代词this/that/these/those、名词复数、所有格's 
 const chapter7_1: RawQuestion[] = [
   // ---- choice 9题 ----
   {
@@ -377,8 +373,7 @@ const chapter7_1: RawQuestion[] = [
   {
     questionKey: 'english-pep-7-1-17',
     type: 'short_answer',
-    questionText: '请用英语介绍你的家庭（至少3句话）。
-提示：你可以介绍家庭成员的数量和他们的身份。',
+    questionText: '请用英语介绍你的家庭（至少3句话）。 提示：你可以介绍家庭成员的数量和他们的身份。',
     answer: 'There are three people in my family. They are my father, my mother and me. My father is a teacher. My mother is a doctor. I love my family.（示例答案）',
     explanation: '介绍家庭时可以用 There be 句型说明人数，然后用 This/That is... 介绍每位成员。',
     difficulty: 2,
@@ -394,8 +389,7 @@ const chapter7_1: RawQuestion[] = [
   {
     questionKey: 'english-pep-7-1-19',
     type: 'short_answer',
-    questionText: '用英语写出家庭树（family tree）中从你往上三代的亲属关系。
-例如：father\'s father = grandfather',
+    questionText: '用英语写出家庭树（family tree）中从你往上三代的亲属关系。 例如：father\'s father = grandfather',
     answer: 'father\'s father = grandfather, father\'s mother = grandmother, mother\'s father = grandfather, mother\'s mother = grandmother, father\'s brother = uncle, mother\'s sister = aunt',
     explanation: '家庭树中，上一代是 parents（父母），上二代是 grandparents（祖父母/外祖父母），父母的兄弟是 uncle，父母的姐妹是 aunt。',
     difficulty: 3,
@@ -601,8 +595,7 @@ const chapter7_2: RawQuestion[] = [
   {
     questionKey: 'english-pep-7-2-19',
     type: 'short_answer',
-    questionText: '请用英语描述从你家到学校怎么走（至少3句话）。
-提示：使用 turn left/right, go along 等短语。',
+    questionText: '请用英语描述从你家到学校怎么走（至少3句话）。 提示：使用 turn left/right, go along 等短语。',
     answer: 'Go along Center Street and turn left at the first crossing. Then go straight and you will see the school on your right. It\'s next to the library.（示例答案）',
     explanation: '指路常用句型：Go along... and turn left/right at...; Go straight; It\'s on your left/right; It\'s next to/across from...。',
     difficulty: 2,
@@ -652,8 +645,7 @@ const chapter7_2: RawQuestion[] = [
   },
 ];
 
-// ========== 7-3 I'm watching TV (24题) =========
-// 知识点：现在进行时 (be + doing)、日常活动词汇、what引导的特殊疑问句
+// ========== 7-3 I\'m watching TV (24题) ========= // 知识点：现在进行时 (be + doing)、日常活动词汇、what引导的特殊疑问句
 
 const chapter7_3: RawQuestion[] = [
   // ---- choice 10题 ----
@@ -1026,8 +1018,7 @@ const chapter8_0: RawQuestion[] = [
   {
     questionKey: 'english-pep-8-0-16',
     type: 'short_answer',
-    questionText: '请用一般过去时写一段话描述你的上一个假期（至少4句话）。
-提示：去了哪里？和谁一起？做了什么？感觉如何？',
+    questionText: '请用一般过去时写一段话描述你的上一个假期（至少4句话）。 提示：去了哪里？和谁一起？做了什么？感觉如何？',
     answer: 'Last summer vacation, I went to Shanghai with my family. We visited the Oriental Pearl Tower and ate delicious food. The weather was hot but we had a great time. I hope to go there again.（示例答案）',
     explanation: '描述过去的经历用一般过去时，注意动词过去式的正确使用。',
     difficulty: 2,
@@ -1168,7 +1159,7 @@ const chapter8_1: RawQuestion[] = [
     questionKey: 'english-pep-8-1-9',
     type: 'fill',
     questionText: 'My sister ___ (not like) drinking milk. She ___ (drink) coffee.',
-    answer: "doesn't like; drinks",
+    answer: "doesn\'t like; drinks",
     explanation: '主语 My sister 是第三人称单数，否定用 doesn\'t like；肯定句动词加 s。',
     difficulty: 1,
     acceptableAnswers: '["doesn\'t like; drinks", "does not like; drinks"]',
@@ -1221,8 +1212,7 @@ const chapter8_1: RawQuestion[] = [
   {
     questionKey: 'english-pep-8-1-15',
     type: 'short_answer',
-    questionText: '请用英语描述你的日常健康习惯（至少4句话）。
-提示：运动频率、饮食、睡眠等。',
+    questionText: '请用英语描述你的日常健康习惯（至少4句话）。 提示：运动频率、饮食、睡眠等。',
     answer: 'I exercise every day. I usually run in the morning for 30 minutes. I eat vegetables every day and hardly ever eat junk food. I sleep about 8 hours every night.（示例答案）',
     explanation: '描述日常习惯用一般现在时，结合频率副词（always, usually, often, sometimes, hardly ever, never）表达频率。',
     difficulty: 2,
@@ -1264,8 +1254,7 @@ const chapter8_1: RawQuestion[] = [
   },
 ];
 
-// ========== 8-2 I'm more outgoing than my sister (26题) =========
-// 知识点：形容词比较级、as...as 同级比较、both/neither/all/none
+// ========== 8-2 I\'m more outgoing than my sister (26题) ========= // 知识点：形容词比较级、as...as 同级比较、both/neither/all/none
 
 const chapter8_2: RawQuestion[] = [
   // ---- choice 10题 ----
@@ -1444,8 +1433,7 @@ const chapter8_2: RawQuestion[] = [
   {
     questionKey: 'english-pep-8-2-19',
     type: 'short_answer',
-    questionText: '请比较你和你最好朋友的不同之处（至少4句话），使用比较级。
-提示：外貌、性格、爱好等方面。',
+    questionText: '请比较你和你最好朋友的不同之处（至少4句话），使用比较级。 提示：外貌、性格、爱好等方面。',
     answer: 'My friend Tom is taller than me. I am more outgoing than him. He is better at math than I am, but I am better at English. He has shorter hair than me.（示例答案）',
     explanation: '比较两个人用"A + be + 比较级 + than + B"结构。',
     difficulty: 2,
@@ -1503,8 +1491,7 @@ const chapter8_2: RawQuestion[] = [
   },
 ];
 
-// ========== 8-3 What's the best movie theater? (22题) =========
-// 知识点：形容词最高级、选择与比较
+// ========== 8-3 What\'s the best movie theater? (22题) ========= // 知识点：形容词最高级、选择与比较
 
 const chapter8_3: RawQuestion[] = [
   // ---- choice 9题 ----
@@ -1656,8 +1643,7 @@ const chapter8_3: RawQuestion[] = [
   {
     questionKey: 'english-pep-8-3-16',
     type: 'short_answer',
-    questionText: '请用英语比较你所在城市的三家电影院（至少4句话），使用最高级。
-提示：从座位、屏幕、价格、服务等方面比较。',
+    questionText: '请用英语比较你所在城市的三家电影院（至少4句话），使用最高级。 提示：从座位、屏幕、价格、服务等方面比较。',
     answer: 'There are three movie theaters in my city. Star Cinema has the biggest screens. Town Cinema has the most comfortable seats. Movie World is the cheapest. I think Town Cinema is the best because it has the friendliest service.（示例答案）',
     explanation: '三者或三者以上比较用最高级，结构为"the + 最高级 + of/in..."。',
     difficulty: 2,
@@ -2124,8 +2110,7 @@ const chapter9_1: RawQuestion[] = [
   {
     questionKey: 'english-pep-9-1-21',
     type: 'short_answer',
-    questionText: '请用英语简要介绍中秋节（至少3句话）。
-提示：时间、食物、活动、寓意。',
+    questionText: '请用英语简要介绍中秋节（至少3句话）。 提示：时间、食物、活动、寓意。',
     answer: 'The Mid-Autumn Festival falls on the 15th day of the 8th lunar month. People eat mooncakes and admire the moon with their families. Mooncakes are round and symbolize family reunion.（示例答案）',
     explanation: '介绍节日时可以涵盖时间、传统食物、活动方式和文化寓意等方面。',
     difficulty: 2,
@@ -2380,8 +2365,7 @@ const chapter9_2: RawQuestion[] = [
   {
     questionKey: 'english-pep-9-2-23',
     type: 'short_answer',
-    questionText: '请用英语描述从学校到你家的路线（至少3句话）。
-提示：使用 go along, turn left/right, on your left/right 等短语。',
+    questionText: '请用英语描述从学校到你家的路线（至少3句话）。 提示：使用 go along, turn left/right, on your left/right 等短语。',
     answer: 'Go along Center Street and turn right at the second crossing. Then walk past the post office. You will see my house on your left. It\'s next to a supermarket.（示例答案）',
     explanation: '指路常用句型：Go along...; Turn left/right at...; Walk past...; It\'s on your left/right; It\'s next to...。',
     difficulty: 2,
@@ -2423,8 +2407,7 @@ const chapter9_2: RawQuestion[] = [
   },
 ];
 
-// ========== 9-3 We're trying to save the earth! (22题) =========
-// 知识点：现在完成时、环保词汇、should/must 表建议和义务
+// ========== 9-3 We're trying to save the earth! (22题) ========= // 知识点：现在完成时、环保词汇、should/must 表建议和义务
 
 const chapter9_3: RawQuestion[] = [
   // ---- choice 9题 ----
