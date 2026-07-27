@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 英语人教版(PEP)初中题目种子数据
  *
  * 涵盖 7~9 年级共 12 个章节，总计 281 道题。
@@ -10,7 +10,7 @@
  * 难度分布：difficulty 1(基础) ~40% | 2(中等) ~40% | 3(提高) ~20%
  */
 
-import { prisma } from '../src/config/database.js';
+import { prisma } from '../../src/config/database.js';
 
 // ---------- 类型定义 ----------
 
