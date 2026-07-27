@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 历史人教版（部编版）初中题目种子数据
  *
  * 涵盖 7~9 年级共 12 个章节，总计 242 道题。
@@ -2980,7 +2980,6 @@ export async function seedHistoryBubianQuestions(): Promise<number> {
     const batch = records.slice(i, i + BATCH_SIZE);
     const result = await prisma.question.createMany({
       data: batch,
-      skipDuplicates: true,
     });
     inserted += result.count;
   }

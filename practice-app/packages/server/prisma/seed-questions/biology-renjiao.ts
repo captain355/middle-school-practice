@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 生物人教版初中题目种子数据
  *
  * 涵盖 7~8 年级共 8 个章节，总计 158 道题。
@@ -1558,7 +1558,6 @@ export async function seedBiologyRenjiaoQuestions(): Promise<number> {
     const batch = records.slice(i, i + BATCH_SIZE);
     const result = await prisma.question.createMany({
       data: batch,
-      skipDuplicates: true,
     });
     inserted += result.count;
   }

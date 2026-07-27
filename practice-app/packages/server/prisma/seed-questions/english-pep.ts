@@ -2685,7 +2685,6 @@ export async function seedEnglishPepQuestions(): Promise<number> {
     const batch = records.slice(i, i + BATCH_SIZE);
     const result = await prisma.question.createMany({
       data: batch,
-      skipDuplicates: true,
     });
     inserted += result.count;
   }
